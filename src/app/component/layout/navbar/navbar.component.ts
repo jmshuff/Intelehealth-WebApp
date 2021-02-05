@@ -36,10 +36,8 @@ export class NavbarComponent implements OnInit {
     { day: "Sunday", startTime: null, endTime: null },
   ];
   readonly VapidKEY =
-    "BAfolLQ7VpRSmWm6DskG-YyG3jjzq5z0rjKEl5HXLCw2W8CKS9cVmifnCAWnrlJMETgbgjuV1pWKLUf8zlbojH0"; // new
-  // "BDGWYaKQhSDtC8VtcPekovFWM4M7mhs3NHe-X1HA7HH-t7nkiexSyYxUxQkwl2H44BiojKJjOdXi367XgxXxvpw" //myTeleDoc
-  // "BFwuhYcJpWKFnTewNm9XtBTycAV_qvBqvIfbALC02CtOaMeXwrO6Zhm7MI_NIjDV9_TCbrr0FMmaDnZ7jllV6Xg"; //old
-  // "BGg2p-PUsSzVF-_DgnNfTPTtnel4-oX7Z6lHT7BnDv88D-SffP_dj1XFVV_r0CsUKz59HmaJp8JadZuHNzzWyzs"; //testing
+    "BIWPsR9rM0wmZxNDcoXzL8-yDm-iCXu6L-atyFaCiA9ekoZR8d5iE5Mqf_zZOBkoAVMWUVHOv5PDao0p2rt4McQ"; // demo
+  // "BOLrnWhOe3J5W-at1ik6GCLb_CVXzEQGXcpWwnJyQEN1KN-a2RLoD2vhKFPzxr4J7OhO14O9yf1V_hmlP6kCb8o"; // afi
 
   searchForm = new FormGroup({
     findInput: new FormControl("", [Validators.required]),

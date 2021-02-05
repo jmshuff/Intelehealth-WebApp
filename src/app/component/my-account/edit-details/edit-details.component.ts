@@ -3,10 +3,9 @@ import { Component, OnInit, Inject } from "@angular/core";
 import { FormGroup, FormControl } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../../environments/environment";
-import { EncounterService } from "src/app/services/encounter.service";
 import { MatDialog } from "@angular/material/dialog";
 import { SignatureComponent } from "../signature/signature.component";
-import { Router } from '@angular/router';
+import { Router } from "@angular/router";
 declare var getFromStorage: any;
 
 @Component({
@@ -17,13 +16,7 @@ declare var getFromStorage: any;
 export class EditDetailsComponent implements OnInit {
   baseURL = environment.baseURL;
   baseURLProvider = `${this.baseURL}/provider/${this.data.uuid}/attribute`;
-  specializations = [
-    "General Physician",
-    "Dermatologist",
-    "Physiotherapist",
-    "Gynecologist",
-    "Pediatrician",
-  ];
+  specializations = ["General Physician"];
   editForm = new FormGroup({
     gender: new FormControl(this.data.person ? this.data.person.gender : null),
     phoneNumber: new FormControl(
@@ -43,11 +36,11 @@ export class EditDetailsComponent implements OnInit {
     ),
     registrationNumber: new FormControl(
       this.data.registrationNumber ? this.data.registrationNumber.value : null
-    )
+    ),
   });
   status = false;
   name = "Enter text";
-  userDetails: any
+  userDetails: any;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data,
     private dialogRef: MatDialogRef<EditDetailsComponent>,
@@ -56,8 +49,8 @@ export class EditDetailsComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit() {      
-    this.userDetails = getFromStorage('user');
+  ngOnInit() {
+    this.userDetails = getFromStorage("user");
   }
 
   onClose() {
@@ -66,16 +59,16 @@ export class EditDetailsComponent implements OnInit {
 
   editSignature() {
     var obj = {
-        name: this.data.textOfSign.value,
-        textOfSignuuid: this.data.textOfSign.uuid,
-        font: this.data.fontOfSign.value,
-        fontOfSignuuid:this.data.fontOfSign.uuid,
-        pid: this.data.uuid,
-        type: "edit"
-    }
-    this.dialog.open(SignatureComponent, { width: "500px", data: obj});
+      name: this.data.textOfSign.value,
+      textOfSignuuid: this.data.textOfSign.uuid,
+      font: this.data.fontOfSign.value,
+      fontOfSignuuid: this.data.fontOfSign.uuid,
+      pid: this.data.uuid,
+      type: "edit",
+    };
+    this.dialog.open(SignatureComponent, { width: "500px", data: obj });
   }
-  
+
   updateDetails() {
     const value = this.editForm.value;
     if (value.gender !== null && value.gender !== this.data.person.gender) {
@@ -121,8 +114,8 @@ export class EditDetailsComponent implements OnInit {
 
     if (value.qualification !== null) {
       const URL = this.data.qualification
-      ? `${this.baseURLProvider}/${this.data.qualification.uuid}`
-      : this.baseURLProvider;
+        ? `${this.baseURLProvider}/${this.data.qualification.uuid}`
+        : this.baseURLProvider;
       const json = {
         attributeType: "4246639f-e9a8-48ea-b9ff-629a7c430543",
         value: value.qualification,
@@ -137,7 +130,7 @@ export class EditDetailsComponent implements OnInit {
       const json = {
         attributeType: "992ccbdd-201a-44ef-8abb-c2eee079886d",
         value: value.registrationNumber,
-      }; 
+      };
       this.http.post(URL, json).subscribe((response) => {});
     }
 
@@ -165,5 +158,4 @@ export class EditDetailsComponent implements OnInit {
     this.onClose();
     setTimeout(() => window.location.reload(), 2000);
   }
-  
 }

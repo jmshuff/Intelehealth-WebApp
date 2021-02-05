@@ -50,7 +50,7 @@ export class EditDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.userDetails = getFromStorage("user");
+    this.userDetails = getFromStorage('user');
   }
 
   onClose() {
@@ -59,13 +59,9 @@ export class EditDetailsComponent implements OnInit {
 
   editSignature() {
     var obj = {
-      name: this.data.textOfSign.value,
-      textOfSignuuid: this.data.textOfSign.uuid,
-      font: this.data.fontOfSign.value,
-      fontOfSignuuid: this.data.fontOfSign.uuid,
       pid: this.data.uuid,
-      type: "edit",
-    };
+      type: "edit"
+    }
     this.dialog.open(SignatureComponent, { width: "500px", data: obj });
   }
 
@@ -131,7 +127,7 @@ export class EditDetailsComponent implements OnInit {
         attributeType: "992ccbdd-201a-44ef-8abb-c2eee079886d",
         value: value.registrationNumber,
       };
-      this.http.post(URL, json).subscribe((response) => {});
+      this.http.post(URL, json).subscribe((response) => { });
     }
 
     if (value.signature !== null) {

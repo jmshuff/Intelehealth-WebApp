@@ -82,6 +82,7 @@ diagnosisForm = new FormGroup({
       };
       this.service.postObs(json)
       .subscribe(resp => {
+        this.diagnosisService.isVisitSummaryChanged = true;
         this.diagnosisList = [];
         this.diagnosis.push({uuid: resp.uuid, value: json.value});
       });

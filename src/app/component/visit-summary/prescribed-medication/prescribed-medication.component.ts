@@ -189,6 +189,7 @@ export class PrescribedMedicationComponent implements OnInit {
       };
       this.service.postObs(json)
         .subscribe(response => {
+          this.diagnosisService.isVisitSummaryChanged = true;
           this.meds.push({ uuid: response.uuid, value: insertValue });
           this.add = false;
         });

@@ -72,6 +72,7 @@ conceptComment = '162169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
       };
       this.service.postObs(json)
       .subscribe(resp => {
+      this.diagnosisService.isVisitSummaryChanged = true
       this.comment.push({uuid: resp.uuid, value: value});
     });
   } else {this.snackbar.open('Another doctor is viewing this case', null, {duration: 4000}); }

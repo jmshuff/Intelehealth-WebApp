@@ -206,6 +206,7 @@ import { ActivatedRoute } from '@angular/router';
 import { transition, trigger, style, animate, keyframes } from '@angular/animations';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PromiseType } from 'protractor/built/plugins';
+import { DiagnosisService } from "src/app/services/diagnosis.service";
 declare var getEncounterProviderUUID: any, getFromStorage: any, getEncounterUUID: any;
 
 @Component({
@@ -242,7 +243,9 @@ export class PatientInteractionComponent implements OnInit {
   constructor(private visitService: VisitService,
     private snackbar: MatSnackBar,
     private route: ActivatedRoute,
-    private encounterService: EncounterService) { }
+    private encounterService: EncounterService,
+    private diagnosisService: DiagnosisService,
+    ) { }
 
   ngOnInit() {
     const visitId = this.route.snapshot.params['visit_id'];
@@ -331,7 +334,10 @@ export class PatientInteractionComponent implements OnInit {
             encounter: this.encounterUuid
           };
           this.encounterService.postObs(json)
-            .subscribe(response => { });
+            .subscribe(response => { 
+              this.diagnosisService.isVisitSummaryChanged = true;
+
+            });
         }
       }
     } else { this.snackbar.open('Another doctor is viewing this case', null, { duration: 4000 }); }

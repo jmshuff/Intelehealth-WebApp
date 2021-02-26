@@ -114,7 +114,7 @@
 
             <div class="text-center">
                   <button (click)="sign()" id="sign-button" mat-raised-button color="primary"
-                        [disabled]="visitCompletePresent">Sign and Submit</button>
+                        [disabled]="visitCompletePresent || isVisitSummaryChanged">Sign and Submit</button>
             </div>
       </div>
 </div>

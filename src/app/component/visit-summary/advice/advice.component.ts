@@ -94,6 +94,7 @@ export class AdviceComponent implements OnInit {
       };
       this.service.postObs(json)
         .subscribe(response => {
+          this.diagnosisService.isVisitSummaryChanged = true;
           this.advice.push({ uuid: response.uuid, value: value });
         });
     } else { this.snackbar.open('Another doctor is viewing this case', null, { duration: 4000 }); }

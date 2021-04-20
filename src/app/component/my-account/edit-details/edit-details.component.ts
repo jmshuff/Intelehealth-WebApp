@@ -59,9 +59,13 @@ export class EditDetailsComponent implements OnInit {
 
   editSignature() {
     var obj = {
+      name: this.data.textOfSign.value,
+      textOfSignuuid: this.data.textOfSign.uuid,
+      font: this.data.fontOfSign.value,
+      fontOfSignuuid: this.data.fontOfSign.uuid,
       pid: this.data.uuid,
-      type: "edit"
-    }
+      type: "edit",
+    };
     this.dialog.open(SignatureComponent, { width: "500px", data: obj });
   }
 

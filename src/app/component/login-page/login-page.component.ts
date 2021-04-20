@@ -71,9 +71,10 @@ export class LoginPageComponent implements OnInit {
         if (response.authenticated === true) {
           this.sessionService.provider(response.user.uuid).subscribe(
             (provider) => {
+            
               this.authService.sendToken(response.user.sessionId);
               saveToStorage("user", response.user);
-
+              saveToStorage("provider",  provider.results[0]);
               this.pushNotificationsService.getUserSettings(response.user.uuid).subscribe((response) => {
                 if(response['data'].isChange == 0){
                   this.dialog.open(ChangePasswordComponent, { width: '500px', data: {isChange: false } });

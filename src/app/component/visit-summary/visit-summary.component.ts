@@ -150,9 +150,9 @@ export class VisitSummaryComponent implements OnInit {
                   },
                   skipFlag: true,
                 };
-                // if(!this.pushNotificationService.snoozeTimeout){
-                //   this.pushNotificationService.postNotification(payload).subscribe();
-                // }
+                if(!this.pushNotificationService.snoozeTimeout){
+                  this.pushNotificationService.postNotification(payload).subscribe();
+                }
               }
             });
           } else {
@@ -178,7 +178,7 @@ export class VisitSummaryComponent implements OnInit {
         if (response) {
           this.signandsubmit();
         }
-       
+    
       });
   }
 

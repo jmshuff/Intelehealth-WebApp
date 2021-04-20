@@ -39,10 +39,10 @@ export class LoginPageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // const isLoggedIn: boolean = this.authService.isLoggedIn();
-    // if (isLoggedIn) {
-    //   this.router.navigateByUrl("/home");
-    // }
+    const isLoggedIn: boolean = this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      this.router.navigateByUrl("/home");
+    }
   }
 
   toggleFieldTextType() {

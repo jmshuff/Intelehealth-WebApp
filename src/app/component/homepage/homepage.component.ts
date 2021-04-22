@@ -157,6 +157,7 @@ export class HomepageComponent implements OnInit {
     this.value.gender = active.patient.person.gender;
     this.value.age = active.patient.person.age;
     this.value.location = active.location.display;
+    this.value.complaints = this.getComplaints(active);
     this.value.status = active.encounters[0].encounterType.display;
     this.value.provider = active.encounters[0].encounterProviders[0].provider.display.split(
       "- "
@@ -172,5 +173,28 @@ export class HomepageComponent implements OnInit {
     script.async = false;
     document.getElementsByTagName('head')[0].appendChild(script);
 
+  }
+
+  getComplaints(visitDetails) {
+    let recent: any =[];
+    const encounters = visitDetails.encounters;
+    encounters.forEach(encounter => {
+    const display = encounter.display;
+    if (display.match('ADULTINITIAL') !== null ) {
+      const obs = encounter.obs;
+      obs.forEach(currentObs => {
+        if (currentObs.display.match('CURRENT COMPLAINT') !== null) {
+          const currentComplaint = currentObs.display.split('<b>');
+          for (let i = 1; i < currentComplaint.length; i++) {
+            const obs1 = currentComplaint[i].split('<');
+            if (!obs1[0].match('Associated symptoms')) {   
+              recent.push(obs1[0]);
+            }
+          }
+        }
+      });
+    }
+   });
+   return recent;
   }
 }

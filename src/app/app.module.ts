@@ -34,6 +34,7 @@ import { TablesComponent } from './component/homepage/tables/tables.component';
 import { SignatureComponent } from './component/my-account/signature/signature.component';
 import { CurrentVisitComponent } from './component/visit-summary/current-visit/current-visit.component';
 import { ModalsComponent } from './component/ayu/modals/modals.component';
+import { ConfirmDiagnosisComponent } from './component/visit-summary/confirm-diagnosis/confirm-diagnosis.component';
 
 
 // Package Import
@@ -106,6 +107,7 @@ import { environment } from '../environments/environment';
     TablesComponent,
     CurrentVisitComponent,
     ModalsComponent,
+    ConfirmDiagnosisComponent,
   ],
   imports: [
     BrowserModule,

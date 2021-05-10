@@ -26,7 +26,7 @@ export class VisitService {
 
   fetchVisitDetails(uuid): Observable<any> {
     // tslint:disable-next-line:max-line-length
-    const url = `${this.baseURL}/visit/${uuid}?v=custom:(uuid,display,startDatetime,stopDatetime,encounters:(display,uuid,obs:(display,uuid,value),encounterProviders:(display,provider:(uuid,attributes))),patient:(uuid,identifiers:(identifier),person:(display)))`;
+    const url = `${this.baseURL}/visit/${uuid}?v=custom:(uuid,indication,display,startDatetime,stopDatetime,encounters:(display,uuid,obs:(display,uuid,value),encounterProviders:(display,provider:(uuid,attributes))),patient:(uuid,identifiers:(identifier),person:(display)))`;
     return this.http.get(url);
   }
 
@@ -49,5 +49,15 @@ export class VisitService {
     // tslint:disable-next-line: max-line-length
     const url = `${this.baseURL}/patient/${id}?v=custom:(identifiers,person:(display,gender,birthdate,preferredAddress:(cityVillage),attributes:(value,attributeType:(display))))`;
     return this.http.get(url);
+  }
+
+  updateVisit(visitId, data): Observable<any> {
+    const url = `${this.baseURL}/visit/${visitId}`;
+    return this.http.post(url, data);
+  }
+
+  updateConcept(uuid, data): Observable<any> {
+    const url = `${this.baseURL}/concept/${uuid}`;
+    return this.http.post(url, data);
   }
 }

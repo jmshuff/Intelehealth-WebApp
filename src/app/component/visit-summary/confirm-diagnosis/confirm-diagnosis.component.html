@@ -1,0 +1,28 @@
+<h4>Unable to Provide Diagnosis</h4>
+<hr>
+<div>Reasons are:</div>
+<form [formGroup]='confirmation' (ngSubmit)='submit()'>
+  <div id="doctor-confirmation">
+    <br>
+    <mat-radio-group aria-label="Select an option" formControlName="reason" [value]="selectedReason"
+      [disabled]="isVisitNotePresent">
+      <mat-radio-button class="example-radio-group" *ngFor="let indication of conceptIndications"
+        [value]="indication.id" (change)="selectReason(indication)">{{indication.name}}</mat-radio-button>&nbsp;
+    </mat-radio-group>
+    <br>
+    <div *ngIf="selectedReason=='8b041bfb-25cb-460a-8b3b-03cb39d14194' && !isVisitNotePresent">
+      <mat-form-field class="full-width">
+        <textarea matInput placeholder="Enter other reasons" (input)="otherReason()"
+          formControlName='otherReason'></textarea>
+      </mat-form-field>
+    </div>
+    <br>
+    <button type="submit" mat-raised-button color="primary" [disabled]="!confirmation.valid">Submit</button>
+  </div>
+</form>
+<br>
+<div *ngIf="selectedValue !== null">
+  <div class="alert alert-primary">
+    <div class="doctor-value">{{selectedValue}}</div>
+  </div>
+</div>

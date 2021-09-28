@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  baseURL: 'https://testing.visilant.org/openmrs/ws/rest/v1',
-  baseURLCoreApp : 'https://testing.visilant.org/openmrs/coreapps/diagnoses',
-  baseURLLegacy: 'https://testing.visilant.org/openmrs',
+  baseURL: 'http://community.aravind.org:8080/openmrs/ws/rest/v1',
+  baseURLCoreApp : 'http://community.aravind.org:8080/openmrs/coreapps/diagnoses',
+  baseURLLegacy: 'https://community.aravind.org:8080/openmrs',
   mindmapURL: 'https://localhost:3004/api'
 };
 

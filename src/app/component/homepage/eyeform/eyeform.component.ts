@@ -110,6 +110,7 @@ export class EyeformComponent implements OnInit {
       { value: '6/24', name: 'Right eye: 6/24' },
       { value: '6/36', name: 'Right eye: 6/36' },
       { value: '6/60', name: 'Right eye: 6/60' },
+      { value: 'Finger counts', name: 'Right eye: Finger counts' },
       { value: 'Hand movements', name: 'Right eye: Hand movements' },
       { value: 'Light perception only', name: 'Right eye: Light perception only' },
       { value: 'No light perception', name: 'Right eye: No light perception' }
@@ -123,6 +124,7 @@ export class EyeformComponent implements OnInit {
       { value: '6/24', name: 'Left eye: 6/24' },
       { value: '6/36', name: 'Left eye: 6/36' },
       { value: '6/60', name: 'Left eye: 6/60' },
+      { value: 'Finger counts', name: 'Left eye: Finger counts' },
       { value: 'Hand movements', name: 'Left eye: Hand movements' },
       { value: 'Light perception only', name: 'Left eye: Light perception only' },
       { value: 'No light perception', name: 'Left eye: No light perception' }

@@ -102,7 +102,7 @@ export class EyeformComponent implements OnInit {
 
   constructVisuityAcuityAndPinholeAcuity() {
     this.accuityandpinholeright.push(
-      { value: '<6/6', name: 'Right eye: <6/6' },
+      // { value: '<6/6', name: 'Right eye: <6/6' },
       { value: '6/6', name: 'Right eye: 6/6' },
       { value: '6/9', name: 'Right eye: 6/9' },
       { value: '6/12', name: 'Right eye: 6/12' },
@@ -115,7 +115,7 @@ export class EyeformComponent implements OnInit {
       { value: 'No light perception', name: 'Right eye: No light perception' }
     );
     this.accuityandpinholeleft.push(
-      { value: '<6/6', name: 'Left eye: <6/6' },
+      // { value: '<6/6', name: 'Left eye: <6/6' },
       { value: '6/6', name: 'Left eye: 6/6' },
       { value: '6/9', name: 'Left eye: 6/9' },
       { value: '6/12', name: 'Left eye: 6/12' },

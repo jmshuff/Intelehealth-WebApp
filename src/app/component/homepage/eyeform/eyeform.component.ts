@@ -102,7 +102,7 @@ export class EyeformComponent implements OnInit {
 
   constructVisuityAcuityAndPinholeAcuity() {
     this.accuityandpinholeright.push(
-      { value: '<6/6', name: 'Right eye: <6/6' },
+      // { value: '<6/6', name: 'Right eye: <6/6' },
       { value: '6/6', name: 'Right eye: 6/6' },
       { value: '6/9', name: 'Right eye: 6/9' },
       { value: '6/12', name: 'Right eye: 6/12' },
@@ -110,12 +110,13 @@ export class EyeformComponent implements OnInit {
       { value: '6/24', name: 'Right eye: 6/24' },
       { value: '6/36', name: 'Right eye: 6/36' },
       { value: '6/60', name: 'Right eye: 6/60' },
+      { value: 'Finger counts', name: 'Right eye: Finger counts' },
       { value: 'Hand movements', name: 'Right eye: Hand movements' },
       { value: 'Light perception only', name: 'Right eye: Light perception only' },
       { value: 'No light perception', name: 'Right eye: No light perception' }
     );
     this.accuityandpinholeleft.push(
-      { value: '<6/6', name: 'Left eye: <6/6' },
+      // { value: '<6/6', name: 'Left eye: <6/6' },
       { value: '6/6', name: 'Left eye: 6/6' },
       { value: '6/9', name: 'Left eye: 6/9' },
       { value: '6/12', name: 'Left eye: 6/12' },
@@ -123,6 +124,7 @@ export class EyeformComponent implements OnInit {
       { value: '6/24', name: 'Left eye: 6/24' },
       { value: '6/36', name: 'Left eye: 6/36' },
       { value: '6/60', name: 'Left eye: 6/60' },
+      { value: 'Finger counts', name: 'Left eye: Finger counts' },
       { value: 'Hand movements', name: 'Left eye: Hand movements' },
       { value: 'Light perception only', name: 'Left eye: Light perception only' },
       { value: 'No light perception', name: 'Left eye: No light perception' }
@@ -137,7 +139,7 @@ export class EyeformComponent implements OnInit {
       { value: 'Eye Pain or Irritation', name: 'Right eye' },
       { value: 'Headache', name: 'Right eye' },
       { value: 'Eye Trauma', name: 'Right eye' },
-      { value: 'PC IOL', name: 'Right eye' },
+      // { value: 'PC IOL', name: 'Right eye' },
       { value: 'Other', name: 'Right eye' },
     );
     this.patientcomplaintleft.push(
@@ -147,7 +149,7 @@ export class EyeformComponent implements OnInit {
       { value: 'Eye Pain or Irritation', name: 'Left eye' },
       { value: 'Headache', name: 'Left eye' },
       { value: 'Eye Trauma', name: 'Left eye' },
-      { value: 'PC IOL', name: 'Left eye' },
+      // { value: 'PC IOL', name: 'Left eye' },
       { value: 'Other', name: 'Left eye' },
     );
   }
@@ -161,6 +163,7 @@ export class EyeformComponent implements OnInit {
       { value: 'Inactive Corneal Opacity', name: 'Right eye' },
       { value: 'Active Corneal Infection', name: 'Right eye' },
       { value: 'Pterygium', name: 'Right eye' },
+      { value: 'PC IOL', name: 'Right eye' },
       { value: 'Other', name: 'Right eye' },
     );
     this.diagnosisleft.push(
@@ -171,6 +174,7 @@ export class EyeformComponent implements OnInit {
       { value: 'Inactive Corneal Opacity', name: 'Left eye' },
       { value: 'Active Corneal Infection', name: 'Left eye' },
       { value: 'Pterygium', name: 'Left eye' },
+      { value: 'PC IOL', name: 'Left eye' },
       { value: 'Other', name: 'Left eye' },
     );
   }

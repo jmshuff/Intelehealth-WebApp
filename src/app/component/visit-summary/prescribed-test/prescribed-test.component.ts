@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { EncounterService } from 'src/app/services/encounter.service';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { DiagnosisService } from 'src/app/services/diagnosis.service';
 import { Observable } from 'rxjs';
@@ -41,7 +40,7 @@ export class PrescribedTestComponent implements OnInit {
     test: new UntypedFormControl('', [Validators.required])
   });
 
-  constructor(private service: EncounterService,
+  constructor(
     private diagnosisService: DiagnosisService,
     private snackbar: MatSnackBar,
     private route: ActivatedRoute) { }
@@ -91,7 +90,7 @@ export class PrescribedTestComponent implements OnInit {
         value: value,
         encounter: this.encounterUuid
       };
-      this.service.postObs(json)
+      this.diagnosisService.postObs(json)
         .subscribe(resp => {
           this.tests.push({ uuid: resp.uuid, value: value });
         });

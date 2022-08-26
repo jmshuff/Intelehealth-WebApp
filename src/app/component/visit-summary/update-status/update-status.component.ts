@@ -2,8 +2,8 @@ import { ModalComponent } from './modal/modal.component';
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { EncounterService } from 'src/app/services/encounter.service';
 import { MatDialog } from '@angular/material/dialog';
+import { DiagnosisService } from 'src/app/services/diagnosis.service';
 declare var getEncounterUUID: any;
 
 @Component({
@@ -25,7 +25,7 @@ export class UpdateStatusComponent implements OnInit {
     comment: new UntypedFormControl('')
   });
 
-  constructor(private service: EncounterService,
+  constructor(private diagnosisService: DiagnosisService,
     private route: ActivatedRoute,
     private dialog: MatDialog) { }
 
@@ -57,7 +57,7 @@ export class UpdateStatusComponent implements OnInit {
   }
 
   saveStatus(payload) {
-    this.service.postObs(payload)
+    this.diagnosisService.postObs(payload)
     .subscribe(resp => {});
   }
 

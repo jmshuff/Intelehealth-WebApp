@@ -2,7 +2,6 @@ import { DiagnosisService } from 'src/app/services/diagnosis.service';
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { VisitService } from 'src/app/services/visit.service';
-import { EncounterService } from 'src/app/services/encounter.service';
 import { ActivatedRoute } from '@angular/router';
 import { transition, trigger, style, animate, keyframes } from '@angular/animations';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -50,8 +49,7 @@ export class PatientInteractionComponent implements OnInit {
   constructor(private visitService: VisitService,
     private diagnosisService: DiagnosisService,
     private snackbar: MatSnackBar,
-    private route: ActivatedRoute,
-    private encounterService: EncounterService) { }
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.visitUuid = this.route.snapshot.params['visit_id'];
@@ -192,7 +190,7 @@ export class PatientInteractionComponent implements OnInit {
             value: this.doctorDetails.html,
             encounter: this.encounterUuid
           };
-          this.encounterService.postObs(json)
+          this.diagnosisService.postObs(json)
             .subscribe(response => { });
         }
       }

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { EncounterService } from 'src/app/services/encounter.service';
 import { ActivatedRoute } from '@angular/router';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { DiagnosisService } from 'src/app/services/diagnosis.service';
@@ -41,7 +40,7 @@ export class FollowUpComponent implements OnInit {
     advice: new UntypedFormControl('')
   });
 
-  constructor(private service: EncounterService,
+  constructor(
     private diagnosisService: DiagnosisService,
     private snackbar: MatSnackBar,
     private route: ActivatedRoute,
@@ -76,7 +75,7 @@ export class FollowUpComponent implements OnInit {
         value: advice ? `${obsdate}, Remark: ${advice}` : obsdate,
         encounter: this.encounterUuid
       };
-      this.service.postObs(json)
+      this.diagnosisService.postObs(json)
         .subscribe(resp => {
           this.followUp.push({ uuid: resp.uuid, value: json.value });
         });

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { EncounterService } from 'src/app/services/encounter.service';
 import { DiagnosisService } from '../../../services/diagnosis.service';
 import { transition, trigger, style, animate, keyframes } from '@angular/animations';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -42,7 +41,7 @@ export class AdditionalCommentComponent implements OnInit {
     comment: new UntypedFormControl('', [Validators.required])
   });
 
-  constructor(private service: EncounterService,
+  constructor(
     private diagnosisService: DiagnosisService,
     private snackbar: MatSnackBar,
     private route: ActivatedRoute) { }
@@ -77,7 +76,7 @@ export class AdditionalCommentComponent implements OnInit {
         value: value,
         encounter: this.encounterUuid
       };
-      this.service.postObs(json)
+      this.diagnosisService.postObs(json)
         .subscribe(resp => {
           this.comment.push({ uuid: resp.uuid, value: value });
         });

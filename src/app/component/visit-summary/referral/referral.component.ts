@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { DiagnosisService } from 'src/app/services/diagnosis.service';
-import { EncounterService } from 'src/app/services/encounter.service';
 declare var getEncounterProviderUUID: any, getFromStorage: any, getEncounterUUID: any, checkReview: any;
 
 @Component({
@@ -53,7 +52,7 @@ export class ReferralComponent implements OnInit {
   rightConcept: string;
   coordinator: Boolean = getFromStorage('coordinator') || false;
 
-  constructor(private service: EncounterService,
+  constructor(
     private diagnosisService: DiagnosisService,
     private snackbar: MatSnackBar,
     private route: ActivatedRoute) { }
@@ -100,7 +99,7 @@ export class ReferralComponent implements OnInit {
         value,
         encounter: this.encounterUuid
       };
-      this.service.postObs(json).subscribe(response => {
+      this.diagnosisService.postObs(json).subscribe(response => {
         const data = {
           uuid: response.uuid,
           value: response.value

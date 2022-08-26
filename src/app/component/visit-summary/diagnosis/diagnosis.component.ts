@@ -1,6 +1,5 @@
 import { ImagesService } from 'src/app/services/images.service';
 import { Component, Input, OnInit } from '@angular/core';
-import { EncounterService } from 'src/app/services/encounter.service';
 import { ActivatedRoute } from '@angular/router';
 import { DiagnosisService } from 'src/app/services/diagnosis.service';
 import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
@@ -75,7 +74,7 @@ export class DiagnosisComponent implements OnInit {
     rightEyeOtherValue: new UntypedFormControl('')
   });
 
-  constructor(private service: EncounterService,
+  constructor(
     private imageService: ImagesService,
     private diagnosisService: DiagnosisService,
     private snackbar: MatSnackBar,
@@ -153,7 +152,7 @@ export class DiagnosisComponent implements OnInit {
         value: side === 'right' ? value.righteye : value.lefteye,
         encounter: this.encounterUuid
       };
-      this.service.postObs(json)
+      this.diagnosisService.postObs(json)
         .subscribe(resp => {
           this.diagnosisForm.reset();
           const allImages = getFromStorage('physicalImages');

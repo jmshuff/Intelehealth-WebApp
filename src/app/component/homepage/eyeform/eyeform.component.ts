@@ -14,12 +14,10 @@ declare var getFromStorage: any;
 export class EyeformComponent implements OnInit {
   data: Array<any> = [];
   showSubmitButton: Boolean = false;
-  accuityandpinholeright: Array<any> = [];
-  accuityandpinholeleft: Array<any> = [];
-  patientcomplaintright: Array<any> = [];
-  patientcomplaintleft: Array<any> = [];
-  diagnosisleft: Array<any> = [];
-  diagnosisright: Array<any> = [];
+  accuityandpinhole: Array<any> = [];
+  patientDiagnosis: Array<any> = [];
+  patientComplaint: Array<any> = [];
+  lensStatus: Array<any> = [];
   processVisitData: Array<any> = [];
   filterData: Array<any> = [];
   filterDataPhone: Array<any> = [];
@@ -29,25 +27,37 @@ export class EyeformComponent implements OnInit {
   eyeCampObs: String = '2ca97364-8945-4a64-985b-b3daad7343e3';
   encounterId: String = '57a72d47-2b0a-4cb9-a1cf-87ab75d406d9';
 
-  patientcomplaintrightShow: Boolean = false;
-  patientcomplaintleftShow: Boolean = false;
-  diagnosisrightShow: Boolean = false;
-  diagnosisleftShow: Boolean = false;
+  complaintRightShow: Boolean = false;
+  complaintLeftShow: Boolean = false;
+  diagnosisRightShow: Boolean = false;
+  diagnosisLeftShow: Boolean = false;
 
-  patientcomplaintrightOther: String = '';
-  patientcomplaintleftOther: String = '';
-  diagnosisrightOther: String = '';
-  diagnosisleftOther: String = '';
+  complaintRightOther: String = '';
+  complaintLeftOther: String = '';
+  diagnosisRightOther: String = '';
+  diagnosisLeftOther: String = '';
+
+  patientObject = {
+    complaintRight: [],
+    complaintLeft: [],
+    diagnosisRight: [],
+    diagnosisLeft: []
+  };
+
+  firstTime: Boolean = false;
+  obsValue;
 
   eyeCampForm = new UntypedFormGroup({
     accuityLeft: new UntypedFormControl(''),
     accuityRight: new UntypedFormControl(''),
     pinholeLeft: new UntypedFormControl(''),
     pinholeRight: new UntypedFormControl(''),
-    complaintLeft: new UntypedFormControl(''),
-    complaintRight: new UntypedFormControl(''),
-    diagnosisLeft: new UntypedFormControl(''),
-    diagnosisRight: new UntypedFormControl(''),
+    complaintLeft: new UntypedFormControl([]),
+    complaintRight: new UntypedFormControl([]),
+    lensStatusLeft: new UntypedFormControl(''),
+    lensStatusRight: new UntypedFormControl(''),
+    diagnosisLeft: new UntypedFormControl([]),
+    diagnosisRight: new UntypedFormControl([]),
     referral: new UntypedFormControl(''),
     referralTime: new UntypedFormControl(''),
     ophthalmologist: new UntypedFormControl('')
@@ -63,10 +73,19 @@ export class EyeformComponent implements OnInit {
     this.constructVisuityAcuityAndPinholeAcuity();
     this.constructPatientComplaint();
     this.constructDiagnosis();
+    this.constructLensStatus()
     this.getAllVisits();
+    this.eyeCampForm.valueChanges.subscribe((val) => {
+      if (this.selectedPatient && !this.firstTime) {
+        this.showSubmitButton = true;
+      } else if (this.firstTime) {
+        this.firstTime = false;
+      }
+    });
   }
 
   processForm(value) {
+    this.firstTime = true;
     value = JSON.parse(value);
     this.eyeCampForm.setValue({
       accuityLeft: value.acuity.left,
@@ -75,6 +94,8 @@ export class EyeformComponent implements OnInit {
       pinholeRight: value.pinhole.right,
       complaintLeft: value.complaint.left,
       complaintRight: value.complaint.right,
+      lensStatusLeft: value?.lens?.left || '',
+      lensStatusRight: value?.lens?.right || '',
       diagnosisLeft: value.diagnosis.left,
       diagnosisRight: value.diagnosis.right,
       referral: value.referral.value,
@@ -101,112 +122,125 @@ export class EyeformComponent implements OnInit {
   }
 
   constructVisuityAcuityAndPinholeAcuity() {
-    this.accuityandpinholeright.push(
-      { value: '<6/6', name: 'Right eye: <6/6' },
-      { value: '6/6', name: 'Right eye: 6/6' },
-      { value: '6/9', name: 'Right eye: 6/9' },
-      { value: '6/12', name: 'Right eye: 6/12' },
-      { value: '6/18', name: 'Right eye: 6/18' },
-      { value: '6/24', name: 'Right eye: 6/24' },
-      { value: '6/36', name: 'Right eye: 6/36' },
-      { value: '6/60', name: 'Right eye: 6/60' },
-      { value: 'Hand movements', name: 'Right eye: Hand movements' },
-      { value: 'Light perception only', name: 'Right eye: Light perception only' },
-      { value: 'No light perception', name: 'Right eye: No light perception' }
-    );
-    this.accuityandpinholeleft.push(
-      { value: '<6/6', name: 'Left eye: <6/6' },
-      { value: '6/6', name: 'Left eye: 6/6' },
-      { value: '6/9', name: 'Left eye: 6/9' },
-      { value: '6/12', name: 'Left eye: 6/12' },
-      { value: '6/18', name: 'Left eye: 6/18' },
-      { value: '6/24', name: 'Left eye: 6/24' },
-      { value: '6/36', name: 'Left eye: 6/36' },
-      { value: '6/60', name: 'Left eye: 6/60' },
-      { value: 'Hand movements', name: 'Left eye: Hand movements' },
-      { value: 'Light perception only', name: 'Left eye: Light perception only' },
-      { value: 'No light perception', name: 'Left eye: No light perception' }
+    this.accuityandpinhole.push(
+      { value: '<6/6'},
+      { value: '6/6' },
+      { value: '6/9' },
+      { value: '6/12' },
+      { value: '6/18' },
+      { value: '6/24' },
+      { value: '6/36' },
+      { value: '6/60' },
+      { value: 'Finger Counts' },
+      { value: 'Hand movements' },
+      { value: 'Light perception only' },
+      { value: 'No light perception' }
     );
   }
 
   constructPatientComplaint() {
-    this.patientcomplaintright.push(
-      { value: 'Blurry Vision Up Close', name: 'Right eye' },
-      { value: 'Blurry Vision Far Away', name: 'Right eye' },
-      { value: 'Redness', name: 'Right eye' },
-      { value: 'Eye Pain or Irritation', name: 'Right eye' },
-      { value: 'Headache', name: 'Right eye' },
-      { value: 'Eye Trauma', name: 'Right eye' },
-      { value: 'PC IOL', name: 'Right eye' },
-      { value: 'Other', name: 'Right eye' },
+    this.patientComplaint.push(
+      { value: 'Blurry Vision Up Close' },
+      { value: 'Blurry Vision Far Away' },
+      { value: 'Redness' },
+      { value: 'Eye Pain or Irritation' },
+      { value: 'Headache' },
+      { value: 'Eye Trauma' },
+      // { value: 'PC IOL' },
+      { value: 'Other' },
     );
-    this.patientcomplaintleft.push(
-      { value: 'Blurry Vision Up Close', name: 'Left eye' },
-      { value: 'Blurry Vision Far Away', name: 'Left eye' },
-      { value: 'Redness', name: 'Left eye' },
-      { value: 'Eye Pain or Irritation', name: 'Left eye' },
-      { value: 'Headache', name: 'Left eye' },
-      { value: 'Eye Trauma', name: 'Left eye' },
-      { value: 'PC IOL', name: 'Left eye' },
-      { value: 'Other', name: 'Left eye' },
+  }
+
+  constructLensStatus() {
+    this.lensStatus.push(
+      {value: 'Mature Cataract'},
+      {value: 'Immature Cataract'},
+      {value: 'Clear Crystalline Lens'},
+      {value: 'Pseudophakia (IOL)'},
+      {value: 'Aphakia'}
     );
   }
 
   constructDiagnosis() {
-    this.diagnosisright.push(
-      { value: 'Normal Eye Exam', name: 'Right eye' },
-      { value: 'Refractive Error/Presbyopia', name: 'Right eye' },
-      { value: 'Immature Cataract', name: 'Right eye' },
-      { value: 'Mature Cataract', name: 'Right eye' },
-      { value: 'Inactive Corneal Opacity', name: 'Right eye' },
-      { value: 'Active Corneal Infection', name: 'Right eye' },
-      { value: 'Pterygium', name: 'Right eye' },
-      { value: 'Other', name: 'Right eye' },
-    );
-    this.diagnosisleft.push(
-      { value: 'Normal Eye Exam', name: 'Left eye' },
-      { value: 'Refractive Error/Presbyopia', name: 'Left eye' },
-      { value: 'Immature Cataract', name: 'Left eye' },
-      { value: 'Mature Cataract', name: 'Left eye' },
-      { value: 'Inactive Corneal Opacity', name: 'Left eye' },
-      { value: 'Active Corneal Infection', name: 'Left eye' },
-      { value: 'Pterygium', name: 'Left eye' },
-      { value: 'Other', name: 'Left eye' },
+    this.patientDiagnosis.push(
+      // { value: 'Normal Eye Exam' },
+      { value: 'Refractive Error/Presbyopia' },
+      { value: 'Pterygium' },
+      // { value: 'Mature Cataract' },
+      { value: 'Inactive Corneal Opacity' },
+      { value: 'Active Corneal Infection' },
+      // { value: 'Pterygium' },
+      { value: 'Other' },
     );
   }
 
-  selected(value, other = false, type = '') {
-    const showInput = ['patientcomplaintright', 'patientcomplaintleft', 'diagnosisright', 'diagnosisleft'];
+  onCheckChange(event, value, other = false, type = '') {
+    if (event.checked) {
+      if (other) {
+        this.selected(value, other, type)
+      } else {
+        this.patientObject[type].push(value)
+      }
+    }
+    else {
+      if (other) {
+        this.selected(value, other, type, true);
+      } else {
+        let index = this.patientObject[type].indexOf(value)
+        if (index > -1) {
+          this.patientObject[type].splice(index, 1);
+        }
+      }
+    }
+    if (this.selectedPatient) {
+      this.showSubmitButton = true;
+    }
+  }
+
+  selected(value, other = false, type = '', unchecked = false) {
+    if (this.selectedPatient) {
+      this.showSubmitButton = true;
+      this.firstTime = false;
+    }
+    const showInput = ['complaintRight', 'complaintLeft', 'diagnosisRight', 'diagnosisLeft'];
     if (other) {
-      if (showInput.includes(type)) {
+      if (showInput.includes(type) && !unchecked) {
         this[`${type}Show`] = true;
+      } else {
+        this[`${type}Show`] = false;
+        this[`${type}Other`] = null
       }
     } else {
       if (showInput.includes(type)) {
         return;
       }
-      this.patientcomplaintrightShow = false;
-      this.patientcomplaintleftShow = false;
-      this.diagnosisrightShow = false;
-      this.diagnosisleftShow = false;
+      this.complaintRightShow = false;
+      this.complaintLeftShow = false;
+      this.diagnosisRightShow = false;
+      this.diagnosisLeftShow = false;
       const data = this.filterData.filter(uuid => uuid.patient_uuid === value);
       this.selectedPatient = data[0];
       if (this.selectedPatient) {
         this.diagnosisService.getObs(this.selectedPatient.patient_uuid, this.eyeCampObs)
-        .subscribe(response => {
-          if (response.results.length) {
-            response.results.forEach(obs => {
-              if (obs.encounter && obs.encounter.visit.uuid === this.selectedPatient.visit_uuid) {
-                this.showSubmitButton = false;
-                this.processForm(obs.value);
-              } else {
-                this.showSubmitButton = true;
-              }
-            });
-          } else {
-            this.showSubmitButton = true;
-          }
-        });
+          .subscribe(response => {
+            if (response.results.length) {
+              response.results.forEach(obs => {
+                this.obsValue = {
+                  obsUuid: obs.uuid,
+                  encounterUuid: obs.encounter.uuid
+                }
+                if (obs.encounter && obs.encounter.visit.uuid === this.selectedPatient.visit_uuid) {
+                  this.showSubmitButton = false;
+                  this.processForm(obs.value);
+                } else {
+                  this.showSubmitButton = true;
+                }
+              });
+            } else {
+              this.showSubmitButton = true;
+              this.obsValue = undefined;
+            }
+          });
       }
     }
   }
@@ -231,26 +265,41 @@ export class EyeformComponent implements OnInit {
     const providerDetails = getFromStorage('provider');
     const providerUuid = providerDetails.uuid;
     if (this.selectedPatient?.patient_uuid && providerUuid) {
-      const json = {
-        patient: this.selectedPatient.patient_uuid,
-        encounterType: this.encounterId,
-        encounterProviders: [{
-          provider: providerUuid,
-          encounterRole: '64538a7f-ca93-47b6-bbdf-06450ca11247'
-          }],
-        visit: this.selectedPatient.visit_uuid,
-        encounterDatetime: date,
-        obs: [{
+      if (this.obsValue) {
+        const json = {
           concept: this.eyeCampObs,
-          value: JSON.stringify(value)
-        }],
-      };
-      this.encounterService.postEncounter(json).subscribe(response => {
-        this.showSubmitButton = false;
-        this.snackbar.open('Complete', null, {duration: 4000});
-      });
+          person: this.selectedPatient?.patient_uuid,
+          obsDatetime: date,
+          value: JSON.stringify(value),
+          encounter: this.obsValue.encounterUuid
+        }
+        this.diagnosisService.editObs(this.obsValue.obsUuid, json).subscribe(res => {
+          this.showSubmitButton = false;
+          this.snackbar.open('Complete', null, {duration: 4000})
+          return;
+        })
+      } else {
+        const json = {
+          patient: this.selectedPatient.patient_uuid,
+          encounterType: this.encounterId,
+          encounterProviders: [{
+            provider: providerUuid,
+            encounterRole: '64538a7f-ca93-47b6-bbdf-06450ca11247'
+          }],
+          visit: this.selectedPatient.visit_uuid,
+          encounterDatetime: date,
+          obs: [{
+            concept: this.eyeCampObs,
+            value: JSON.stringify(value)
+          }],
+        };
+        this.encounterService.postEncounter(json).subscribe(response => {
+          this.showSubmitButton = false;
+          this.snackbar.open('Complete', null, {duration: 4000});
+        });
+      }
     } else {
-      this.snackbar.open('Patient Not Selected', null, {duration: 4000});
+      this.snackbar.open('Patient Not Selected', null, { duration: 4000 });
     }
   }
 
@@ -265,12 +314,16 @@ export class EyeformComponent implements OnInit {
         right: data.pinholeRight
       },
       complaint: {
-        left: data.complaintLeft === 'Other' ? this.patientcomplaintleftOther : data.complaintLeft,
-        right: data.complaintRight === 'Other' ? this.patientcomplaintrightOther : data.complaintRight
+        left: [...this.patientObject.complaintLeft, this.complaintLeftOther].filter(function (el) { return el != null && el != ''}), //data.complaintLeft === 'Other' ? this.patientcomplaintleftOther : data.complaintLeft,
+        right: [...this.patientObject.complaintRight, this.complaintRightOther].filter(function (el) { return el != null && el != ''}) //data.complaintRight === 'Other' ? this.patientcomplaintrightOther : data.complaintRight
+      },
+      lens: {
+        left: data.lensStatusLeft,
+        right: data.lensStatusRight
       },
       diagnosis: {
-        left: data.diagnosisLeft === 'Other' ? this.diagnosisleftOther :  data.diagnosisLeft,
-        right: data.diagnosisRight === 'Other' ? this.diagnosisrightOther : data.diagnosisRight
+        left: [...this.patientObject.diagnosisLeft, this.diagnosisLeftOther].filter(function (el) { return el != null && el != ''}), //data.diagnosisLeft === 'Other' ? this.diagnosisleftOther : data.diagnosisLeft,
+        right: [...this.patientObject.diagnosisRight, this.diagnosisRightOther].filter(function (el) { return el != null && el != ''}) //data.diagnosisRight === 'Other' ? this.diagnosisrightOther : data.diagnosisRight
       },
       referral: {
         value: data.referral,

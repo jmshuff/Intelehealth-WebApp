@@ -106,7 +106,10 @@ export class HomepageComponent implements OnInit {
         let length = 0, flagLength = 0, visitNoteLength = 0, completeVisitLength = 0;
         visits.forEach(async active => {
           if (active.encounters.length > 0) {
-            const value = active.encounters[0].display;
+            let value = active.encounters[0].display;
+            if (value.match('Eye Camp')) {
+              value = active.encounters[1].display;
+            }
             if (value.match('Flagged')) {
               if (!active.encounters[0].voided) {
                 const values = this.assignValueToProperty(active, 'Flagged');

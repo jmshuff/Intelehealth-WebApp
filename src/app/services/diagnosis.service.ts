@@ -18,15 +18,25 @@ export class DiagnosisService {
     return this.http.get(url);
   }
 
+  getObs(patientId, conceptId): Observable<any> {
+    // tslint:disable-next-line: max-line-length
+    const url = `${this.baseURL}/obs?patient=${patientId}&v=custom:(uuid,value,obsDatetime,encounter:(uuid,visit:(uuid)))&concept=${conceptId}`;
+    return this.http.get(url);
+  }
+
+  postObs(json): Observable<any> {
+    const url = `${this.baseURL}/obs`;
+    return this.http.post(url, json);
+  }
+
+  editObs(uuid, json): Observable<any> {
+    const url = `${this.baseURL}/obs/${uuid}`;
+    return this.http.post(url, json);
+  }
+
   deleteObs(uuid): Observable<any> {
     const url = `${this.baseURL}/obs/${uuid}`;
     return this.http.delete(url);
-  }
-
-  getObs(patientId, conceptId): Observable<any> {
-    // tslint:disable-next-line: max-line-length
-    const url = `${this.baseURL}/obs?patient=${patientId}&v=custom:(uuid,value,obsDatetime,encounter:(visit:(uuid)))&concept=${conceptId}`;
-    return this.http.get(url);
   }
 
   getDiagnosisList(term) {

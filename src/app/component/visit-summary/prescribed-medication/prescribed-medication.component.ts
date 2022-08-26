@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { EncounterService } from 'src/app/services/encounter.service';
 import { ActivatedRoute } from '@angular/router';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -55,7 +54,7 @@ export class PrescribedMedicationComponent implements OnInit {
     additional: new UntypedFormControl('')
   });
 
-  constructor(private service: EncounterService,
+  constructor(
     private diagnosisService: DiagnosisService,
     private snackbar: MatSnackBar,
     private route: ActivatedRoute) { }
@@ -181,7 +180,7 @@ export class PrescribedMedicationComponent implements OnInit {
         value: insertValue,
         encounter: this.encounterUuid
       };
-      this.service.postObs(json)
+      this.diagnosisService.postObs(json)
         .subscribe(response => {
           this.meds.push({ uuid: response.uuid, value: insertValue });
           this.add = false;

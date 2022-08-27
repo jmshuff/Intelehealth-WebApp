@@ -2,15 +2,6 @@
   width: 100%;
 }
 
-.section {
-  width: 30%;
-}
-
-.flex {
-  display: flex;
-  justify-content: space-around;
-}
-
 .radio-group {
   display: flex;
   flex-direction: column;
@@ -25,28 +16,52 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  font-size: 12px;
 }
 
 .mat-list {
   width: 90%;
   margin: 0px;
+  align-items: center;
 }
 
 .fa-arrow-right {
   cursor: pointer;
 }
 
+.diagnosis-wrapper {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+#primary-confirm {
+  display: flex;
+  justify-content: space-between;
+}
+
+.diagnosis-section {
+  width: 100%;
+  padding: 25px 25px 0px 25px;
+}
+
+.diagnosis-list {
+  width: 100%;
+  padding: 2px 10px 0px 2px;
+}
+
+
 @media only screen and (max-width: 768px) { 
   .example-full-width {
     width: 100%;
   }
 
-  .flex {
+  .diagnosis-wrapper {
     flex-direction: column;
   }
 
-  .section {
-    width: 100%;
+  #primary-confirm {
+    flex-direction: column;
   }
 }
 

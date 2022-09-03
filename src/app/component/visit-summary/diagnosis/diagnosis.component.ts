@@ -38,19 +38,31 @@ export class DiagnosisComponent implements OnInit {
   additionDiagnosisList = ['Refractive Error/Presbyopia', 'Pterygium', 'Inactive Corneal Opacity', 'Active Corneal Infection']
   eyeDiagnosisList = ['Immature Cataract', 'Mature Cataract', 'Refractive Error', 'Pseudophakia', 'Normal Eye Exam'];
   // conceptDiagnosis = '537bb20d-d09d-4f88-930b-cc45c7d662df';
-  conceptLensLeftEyeDiagnosis: String = '1796244d-e936-4ab8-ac8a-c9bcfa476570';
-  conceptLensRightEyeDiagnosis: String = '58cae684-1509-4fd5-b256-5ca980ec6bb4';
-
-  conceptLeftEyeDiagnosisReview1: String = 'd72f7295-f1e1-436f-bac4-5ad88b6dc6cb';
-  conceptRightEyeDiagnosisReview1: String = 'f7d5d646-bb4e-4f26-970d-0df61b3b138f';
-  conceptLeftEyeDiagnosisReview2: String = '7323ebb4-9ac2-4bd7-8ef5-3988d7bf6f7c';
-  conceptRightEyeDiagnosisReview2: String = '7633430a-fef7-4d6b-ba47-238bafa68024';
-  conceptCoordinatorLeftEyeDiagnosis: String = 'e91cda51-caed-4f95-8a94-97135b5a865d';
-  conceptCoordinatorRightEyeDiagnosis: String = 'b30f2a76-e216-48cf-aa6d-d50e6cca917f';
-
+  // Doctor 1
+  conceptLeftLensEyeDiagnosis: String = '1796244d-e936-4ab8-ac8a-c9bcfa476570';
+  conceptRightLensEyeDiagnosis: String = '58cae684-1509-4fd5-b256-5ca980ec6bb4';
   conceptadditionalPathologyLeft: String = 'bb23ea0b-d87b-41d2-bf7b-95237e1c9e0a';
   conceptadditionalPathologyRight: String = '03f13e27-0bde-4e76-ac64-0c5b1566cce9';
 
+  // Review 1
+  conceptLeftLensEyeDiagnosisReview1: String = 'd72f7295-f1e1-436f-bac4-5ad88b6dc6cb';
+  conceptRightLensEyeDiagnosisReview1: String = 'f7d5d646-bb4e-4f26-970d-0df61b3b138f';
+  conceptadditionalPathologyLeftReview1: String = 'ccb64c74-2ebc-4fe5-b3e1-70f70af67ec8';
+  conceptadditionalPathologyRightReview1: String = '42b0e689-0bc9-4574-a381-e8120bd7d48b';
+
+  // Review 2
+  conceptLeftLensEyeDiagnosisReview2: String = '7323ebb4-9ac2-4bd7-8ef5-3988d7bf6f7c';
+  conceptRightLensEyeDiagnosisReview2: String = '7633430a-fef7-4d6b-ba47-238bafa68024';
+  conceptadditionalPathologyLeftReview2 : String = 'adfdb1fc-09fa-42ec-9bfe-5b837427f603'
+  conceptadditionalPathologyRightReview2: String = '586d6695-f378-4dc2-bfec-7c1d3ee37fc6';
+
+  // Coordinator
+  conceptCoordinatorLeftLensEyeDiagnosis: String = 'e91cda51-caed-4f95-8a94-97135b5a865d';
+  conceptCoordinatorRightLensEyeDiagnosis: String = 'b30f2a76-e216-48cf-aa6d-d50e6cca917f';
+  conceptCoordinatorAdditionalPathologyLeft: String = 'f299dc9e-c1e0-4a51-be5b-60d3cc118991';
+  conceptCoordinatorAdditionalPathologyRight: String = '228ef575-71b9-4d7b-8ee7-cad98d27e3a2'
+
+  
   patientId: string;
   visitUuid: string;
   encounterUuid: string;
@@ -61,20 +73,20 @@ export class DiagnosisComponent implements OnInit {
   @Input() data;
 
   diagnosisConcept = [
-    {concept: this.conceptLensLeftEyeDiagnosis, name: 'leftLensDiagnosis'},
-    {concept: this.conceptLensRightEyeDiagnosis , name: 'rightLensDiagnosis'},
+    {concept: this.conceptLeftLensEyeDiagnosis, name: 'leftLensDiagnosis'},
+    {concept: this.conceptRightLensEyeDiagnosis , name: 'rightLensDiagnosis'},
     {concept: this.conceptadditionalPathologyLeft, name: 'leftPathologyDiagnosis'},
     {concept: this.conceptadditionalPathologyRight, name: 'rightPathologyDiagnosis'}
   ];
 
   diagnosisConceptReview1 = [
-    {concept: this.conceptLeftEyeDiagnosisReview1, name: 'leftLensDiagnosis'},
-    {concept: this.conceptRightEyeDiagnosisReview1 , name: 'rightLensDiagnosis'}
+    {concept: this.conceptLeftLensEyeDiagnosisReview1, name: 'leftLensDiagnosis'},
+    {concept: this.conceptRightLensEyeDiagnosisReview1 , name: 'rightLensDiagnosis'}
   ];
 
   diagnosisConceptReview2 = [
-    {concept: this.conceptLeftEyeDiagnosisReview2, name: 'leftLensDiagnosis'},
-    {concept: this.conceptRightEyeDiagnosisReview2 , name: 'rightLensDiagnosis'}
+    {concept: this.conceptLeftLensEyeDiagnosisReview2, name: 'leftLensDiagnosis'},
+    {concept: this.conceptRightLensEyeDiagnosisReview2 , name: 'rightLensDiagnosis'}
   ];
 
   rightConcept: string;
@@ -99,7 +111,6 @@ export class DiagnosisComponent implements OnInit {
     this.patientId = this.route.snapshot.params['patient_id'] || this.data.patientId;
     const reviewVisit = checkReview(this.visitUuid);
     this.rightConcept = reviewVisit?.reviewType === 1 ? 'diagnosisConceptReview1' : reviewVisit?.reviewType === 2 ? 'diagnosisConceptReview2' : 'diagnosisConcept';
-    console.log(this.rightConcept)
     this[this.rightConcept].forEach(each => {
       this.diagnosisService.getObs(this.patientId, each.concept)
       .subscribe(response => {
@@ -107,8 +118,6 @@ export class DiagnosisComponent implements OnInit {
           if (obs.encounter.visit.uuid === this.visitUuid) {
             this[each.name].push(obs);
           }
-          console.log(this.rightPathologyDiagnosis)
-      console.log(this.leftPathologyDiagnosis)
         });
       });
       
@@ -120,7 +129,7 @@ export class DiagnosisComponent implements OnInit {
     const list = ['Inactive Corneal Opacity', 'Pterygium', 'Conjunctivitis',
           'Subconjunctival hemorrhage', 'Presbyopia',
           'Active Corneal Infection', 'Posterior Segment Screening',
-          'Posterior Segment Screening', 'Cannot be assessed'];
+          'Cannot be assessed'];
     this.diagnosisList = list.filter(eye => eye.toLowerCase().includes(searchedTerm));
   }
 
@@ -162,7 +171,6 @@ export class DiagnosisComponent implements OnInit {
   }
 
   onClickHandler = (side, value, type) => {
-    console.log(type)
     if (side === 'left') {
       if (type) {
         this.diagnosisForm.controls.pathologyLeftEye.setValue(value);
@@ -182,7 +190,7 @@ export class DiagnosisComponent implements OnInit {
       let json;
       if (type) {
         json = {
-          concept: side === 'right' ? this.showDetails ? this.conceptCoordinatorRightEyeDiagnosis : this[this.rightConcept][3].concept : this.showDetails ? this.conceptCoordinatorLeftEyeDiagnosis : this[this.rightConcept][2].concept,
+          concept: side === 'right' ? this.showDetails ? this.conceptCoordinatorRightLensEyeDiagnosis : this[this.rightConcept][3].concept : this.showDetails ? this.conceptCoordinatorLeftLensEyeDiagnosis : this[this.rightConcept][2].concept,
           value: side === 'right' ? value.pathologyRightEye : value.pathologyLeftEye,
           person: this.patientId,
           obsDatetime: date,
@@ -190,15 +198,13 @@ export class DiagnosisComponent implements OnInit {
         }
       } else {
         json = {
-          concept: side === 'right' ? this.showDetails ? this.conceptCoordinatorRightEyeDiagnosis : this[this.rightConcept][1].concept : this.showDetails ? this.conceptCoordinatorLeftEyeDiagnosis : this[this.rightConcept][0].concept,
+          concept: side === 'right' ? this.showDetails ? this.conceptCoordinatorRightLensEyeDiagnosis : this[this.rightConcept][1].concept : this.showDetails ? this.conceptCoordinatorLeftLensEyeDiagnosis : this[this.rightConcept][0].concept,
           person: this.patientId,
           obsDatetime: date,
           value: side === 'right' ? value.lensRightEye : value.lensLeftEye,
           encounter: this.encounterUuid
         };
       }
-      
-      console.log(json)
       this.diagnosisService.postObs(json)
         .subscribe(resp => {
           this.diagnosisForm.reset();

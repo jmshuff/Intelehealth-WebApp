@@ -13,10 +13,12 @@
                 </mat-radio-group>
             </div>
             <div *ngIf="referralObs?.value !== 'No'">
-                <h5>What timeframe is required for the referral? </h5>
+                <h5>Is this referral urgent?</h5>
+                <i>(Risk of developing new case of blindness if not treated within 7 days.)</i>
+                <h6>If refer:</h6>
                 <mat-radio-group aria-label="Select an option" class="radio-group" [value]="referralTimeObs?.value" [disabled]="referralTimeObs?.value" (change)="onChangeHandler('referralTime', $event.value)">
-                    <mat-radio-button class="radio-button" value="< 3 days">< 3 days</mat-radio-button>
-                    <mat-radio-button class="radio-button" value="3+ days">3+ days</mat-radio-button>
+                    <mat-radio-button class="radio-button" value="Urgent referral">Urgent referral</mat-radio-button>
+                    <mat-radio-button class="radio-button" value="Non-urgent referral">Non-urgent referral</mat-radio-button>
                     <!-- <mat-radio-button class="radio-button" value="Refer in 15+ days">Refer in 15+ days</mat-radio-button> -->
                 </mat-radio-group>
             </div>

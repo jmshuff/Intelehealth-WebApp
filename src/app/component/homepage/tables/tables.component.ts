@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tables',
@@ -15,21 +14,12 @@ export class TablesComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @Input() data;
-  @Input() type;
-  @Output() getType = new EventEmitter<string>();
-  constructor(private router: Router) { }
+  constructor() { }
 
   ngOnInit() {
     this.dataSource = new MatTableDataSource(this.data);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  }
-
-  onClickHandler(type, data) {
-    if (type === 'patient') {
-      this.getType.emit(this.type);
-      this.router.navigate(['/visitSummary', data.patient, data.visit]);
-    }
   }
 
   applyFilter(filterValue: string) {
@@ -39,4 +29,5 @@ export class TablesComponent implements OnInit {
       this.dataSource.paginator.firstPage();
     }
   }
+
 }

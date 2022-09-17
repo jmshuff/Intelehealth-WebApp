@@ -20,6 +20,7 @@ import { DiagnosisComponent } from './component/visit-summary/diagnosis/diagnosi
 import { PrescribedTestComponent } from './component/visit-summary/prescribed-test/prescribed-test.component';
 import { AdviceComponent } from './component/visit-summary/advice/advice.component';
 import { FollowUpComponent } from './component/visit-summary/follow-up/follow-up.component';
+import { ReferralComponent } from './component/visit-summary/referral/referral.component';
 import { PrescribedMedicationComponent } from './component/visit-summary/prescribed-medication/prescribed-medication.component';
 import { LoginPageComponent } from './component/login-page/login-page.component';
 import { NavbarComponent } from './component/layout/navbar/navbar.component';
@@ -57,6 +58,28 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
+
+// Material Design Imports
+// import {
+//   MatDialogModule,
+//   MatGridListModule,
+//   MatCardModule,
+//   MatSnackBarModule,
+//   MatInputModule,
+//   MatDatepickerModule,
+//   MatNativeDateModule,
+//   MatButtonModule,
+//   MatIconModule,
+//   MatRadioModule,
+//   MatTooltipModule,
+//   MatTableModule,
+//   MatPaginatorModule,
+//   MatSortModule,
+//   MatListModule,
+//   MatSelectModule,
+//   MatAutocompleteModule,
+//   MatProgressSpinnerModule,
+//   MatExpansionModule} from '@angular/material/';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -68,16 +91,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { ReferralComponent } from './component/visit-summary/referral/referral.component';
-import { CoOrdinatorComponent } from './component/homepage/tables/co-ordinator-table/co-ordinator.component';
-import { PastCallsComponent } from './component/visit-summary/past-calls/past-calls.component';
-import { UpdateStatusComponent } from './component/visit-summary/update-status/update-status.component';
-import { ModalComponent } from './component/visit-summary/update-status/modal/modal.component';
-import { EyeformComponent } from './component/homepage/eyeform/eyeform.component';
-import { ReportComponent } from './component/layout/navbar/report/report.component';
+import {MatPaginatorModule} from '@angular/material/paginator';
+
+
+
 
 @NgModule({
   declarations: [
@@ -98,6 +115,7 @@ import { ReportComponent } from './component/layout/navbar/report/report.compone
     PrescribedTestComponent,
     AdviceComponent,
     FollowUpComponent,
+    ReferralComponent,
     LoginPageComponent,
     PrescribedMedicationComponent,
     NavbarComponent,
@@ -113,13 +131,6 @@ import { ReportComponent } from './component/layout/navbar/report/report.compone
     TablesComponent,
     CurrentVisitComponent,
     ModalsComponent,
-    ReferralComponent,
-    CoOrdinatorComponent,
-    PastCallsComponent,
-    UpdateStatusComponent,
-    ModalComponent,
-    EyeformComponent,
-    ReportComponent
   ],
   imports: [
     BrowserModule,
@@ -146,15 +157,12 @@ import { ReportComponent } from './component/layout/navbar/report/report.compone
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatExpansionModule,
-    MatCheckboxModule,
-    MatSlideToggleModule,
     NgbModule,
     HttpClientModule,
     UserIdleModule.forRoot({ idle: 900, timeout: 30, ping: 12 }),
     RouterModule.forRoot([
       { path: '', component: LoginPageComponent },
       { path: 'home', component: HomepageComponent, canActivate: [AuthGuard] },
-      { path: 'eyeform', component: EyeformComponent, canActivate: [AuthGuard] },
       { path: 'findPatient', component: FindPatientComponent, canActivate: [AuthGuard] },
       { path: 'myAccount', component: MyAccountComponent, canActivate: [AuthGuard] },
       { path: 'ayu', component: AyuComponent, canActivate: [AuthGuard] },
@@ -162,10 +170,9 @@ import { ReportComponent } from './component/layout/navbar/report/report.compone
       { path: 'signature', component: SignatureComponent, canActivate: [AuthGuard] },
       { path: 'editDetails', component: EditDetailsComponent, canActivate: [AuthGuard] },
       { path: 'changePassword', component: ChangePasswordComponent, canActivate: [AuthGuard] },
-      { path: 'report', component: ReportComponent, canActivate: [AuthGuard] },
       { path: 'visitSummary/:patient_id/:visit_id', component: VisitSummaryComponent, canActivate: [AuthGuard] },
       { path: '**', component: Page404Component }
-    ], { scrollPositionRestoration: 'enabled', relativeLinkResolution: 'legacy' }),
+    ], { scrollPositionRestoration: 'enabled' }),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [

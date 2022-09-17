@@ -9,14 +9,11 @@ mat-spinner {
   top:42%;
 }
 
-.mt-50 {
-  margin-top: 50px;
-}
-
 .spin {
   filter: blur(8px);
   -webkit-filter: blur(8px);
 }
+
 
 .example-headers-align .mat-expansion-panel-header-title,
 .example-headers-align .mat-expansion-panel-header-description {

@@ -39,7 +39,15 @@ export class AyuComponent implements OnInit {
   fetchMindmap(): void {
     this.mindmapService.getMindmapKey()
       .subscribe(response => {
-        this.mindmaps = response.data;
+        const keys = response.data.licensekey;
+        keys.forEach(key => {
+          const values = {
+            keys: Object.keys(key)[0],
+            value: {}
+          };
+          values.value[Object.keys(key)[0]] = Object.values(key)[0];
+          this.mindmaps.push(values);
+        });
       }, err => this.snackbar.open('Error fetching Mindmap keys', null, { duration: 4000 }));
   }
 
@@ -118,7 +126,7 @@ export class AyuComponent implements OnInit {
   }
 
   editMindmap(index): void {
-    console.log(index, this.mindmapData[index].name);
+    console.log(index, this.mindmapData[index].name)
   }
 
   deleteMindmap(name): void {

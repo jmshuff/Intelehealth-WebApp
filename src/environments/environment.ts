@@ -4,11 +4,10 @@
 
 export const environment = {
   production: false,
-  baseURL: 'https://aroma.visilant.org/openmrs/ws/rest/v1',
-  baseURLCoreApp : 'https://aroma.visilant.org/openmrs/coreapps/diagnoses',
-  baseURLLegacy: 'https://aroma.visilant.org/openmrs',
-  mindmapURL: 'http://aroma.visilant.org:3004/api',
-  azureImage: 'https://aroma.visilant.org:3006/api/v1'
+  baseURL: 'https://testing.visilant.org/openmrs/ws/rest/v1',
+  baseURLCoreApp : 'https://testing.visilant.org/openmrs/coreapps/diagnoses',
+  baseURLLegacy: 'https://testing.visilant.org/openmrs',
+  mindmapURL: 'https://localhost:3004/api'
 };
 
 /*
@@ -18,4 +17,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+// import 'zone.js/dist/zone-error';  // Included with Angular CLI.

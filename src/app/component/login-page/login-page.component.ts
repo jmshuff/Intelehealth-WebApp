@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from 'src/app/services/auth.service';
 import { SessionService } from 'src/app/services/session.service';
-declare var saveToStorage: any, deleteFromStorage: any;
+declare var saveToStorage: any;
 
 @Component({
   selector: 'app-login-page',
@@ -12,9 +12,9 @@ declare var saveToStorage: any, deleteFromStorage: any;
   styleUrls: ['./login-page.component.css']
 })
 export class LoginPageComponent implements OnInit {
-  loginForm = new UntypedFormGroup({
-    username: new UntypedFormControl('', [Validators.required]),
-    password: new UntypedFormControl('', [Validators.required])
+  loginForm = new FormGroup({
+    username: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required])
   });
 
   constructor(
@@ -37,11 +37,6 @@ export class LoginPageComponent implements OnInit {
     const base64 = btoa(string);
     this.sessionService.loginSession(base64).subscribe(response => {
       if (response.authenticated === true) {
-        if (response.user.roles.some(role => role.display.match('Coordinator'))) {
-          this.authService.setCoordinator();
-        } else {
-          deleteFromStorage('coordinator');
-        }
         this.router.navigate(['/home']);
         this.authService.sendToken(response.sessionId);
         saveToStorage('user', response.user);

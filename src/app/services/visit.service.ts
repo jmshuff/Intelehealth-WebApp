@@ -7,19 +7,15 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 
+
 export class VisitService {
   private baseURL = environment.baseURL;
 
   constructor(private http: HttpClient) { }
 
-  getVisits(deleted = false): Observable<any> {
+  getVisits(): Observable<any> {
     // tslint:disable-next-line:max-line-length
-    const url = `${this.baseURL}/visit?includeInactive=${deleted}&v=custom:(uuid,patient:(uuid,identifiers:(identifier),person:(display,gender,age,birthdate,attributes)),location:(display),encounters:(display,encounterDatetime,voided,encounterType:(display),encounterProviders),attributes)`;
-    return this.http.get(url);
-  }
-
-  getReferralVisits(): Observable<any> {
-    const url = `${this.baseURL}/visit?includeInactive=false&v=custom:(uuid,patient:(uuid,identifiers:(identifier),person:(display,gender)),encounters:(display,encounterType:(display),obs:(uuid,display,obsDatetime,voided,value))`;
+    const url = `${this.baseURL}/visit?includeInactive=false&v=custom:(uuid,patient:(uuid,identifiers:(identifier),person:(display,gender,age,birthdate)),location:(display),encounters:(display,encounterDatetime,voided,encounterType:(display),encounterProviders),attributes)`;
     return this.http.get(url);
   }
 
@@ -51,12 +47,7 @@ export class VisitService {
 
   patientInfo(id): Observable<any> {
     // tslint:disable-next-line: max-line-length
-    const url = `${this.baseURL}/patient/${id}?v=custom:(identifiers,person:(uuid,display,gender,birthdate,preferredAddress:(cityVillage),attributes:(uuid,value,attributeType:(uuid,display))))`;
-    return this.http.get(url);
-  }
-
-  getVisitReport(from, to): Observable<any> {
-    const url = `${environment.azureImage}/excel/download?from='${from}'&to='${to}'`;
+    const url = `${this.baseURL}/patient/${id}?v=custom:(identifiers,person:(display,gender,birthdate,preferredAddress:(cityVillage),attributes:(value,attributeType:(display))))`;
     return this.http.get(url);
   }
 }

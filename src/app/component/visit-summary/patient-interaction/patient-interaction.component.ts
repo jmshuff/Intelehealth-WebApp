@@ -1,6 +1,5 @@
-import { DiagnosisService } from 'src/app/services/diagnosis.service';
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { VisitService } from 'src/app/services/visit.service';
 import { EncounterService } from 'src/app/services/encounter.service';
 import { ActivatedRoute } from '@angular/router';
@@ -29,67 +28,46 @@ declare var getEncounterProviderUUID: any, getFromStorage: any, getEncounterUUID
 })
 export class PatientInteractionComponent implements OnInit {
   msg: any = [];
-  phoneNo: any = 999999999;
+  whatsappLink: string;
+  phoneNo;
   patientDetails: any;
   doctorDetails: any = {};
   conceptAdvice = '67a050c1-35e5-451c-a4ab-fff9d57b0db1';
   encounterUuid: string;
-  visitUuid: string;
-  patientId: string;
-  conceptLeftEyeDiagnosis: String = '1796244d-e936-4ab8-ac8a-c9bcfa476570';
-  conceptRightEyeDiagnosis: String = '58cae684-1509-4fd5-b256-5ca980ec6bb4';
-  ReferralLocationConcept: String = '56ed8dca-a028-4108-b42e-6f9fab6f5d9e';
-  referralLocation: any = [];
-  leftDiagnosis: any = [];
-  rightDiagnosis: any = [];
-  patientInfo: any;
 
-  interaction = new UntypedFormGroup({
-    interaction: new UntypedFormControl('', [Validators.required])
+  interaction = new FormGroup({
+    interaction: new FormControl('', [Validators.required])
   });
   constructor(private visitService: VisitService,
-    private diagnosisService: DiagnosisService,
     private snackbar: MatSnackBar,
     private route: ActivatedRoute,
     private encounterService: EncounterService) { }
 
   ngOnInit() {
-    this.visitUuid = this.route.snapshot.params['visit_id'];
-    this.patientId = this.route.snapshot.paramMap.get('patient_id');
-    // this.visitService.fetchVisitDetails(this.visitUuid)
-    //   .subscribe(visitDetails => {
-    //     this.patientDetails = visitDetails.patient;
-    //     console.log(this.patientDetails)
-    //     visitDetails.encounters.forEach(encounter => {
-    //       if (encounter.display.match('ADULTINITIAL') != null) {
-    //         const providerAttribute = encounter.encounterProviders[0].provider.attributes;
-    //         if (providerAttribute.length) {
-    //           providerAttribute.forEach(attribute => {
-    //             if (attribute.display.match('phoneNumber') != null) {
-    //               this.phoneNo = attribute.value;
-    //             }
-    //             if (attribute.display.match('whatsapp') != null) {
-    //               const whatsapp = attribute.value;
-    //               // tslint:disable-next-line: max-line-length
-    // tslint:disable-next-line: max-line-length
-    //               const text = encodeURI(`Hello I'm calling for patient ${this.patientDetails.person.display} OpenMRS ID ${this.patientDetails.identifiers[0].identifier}`);
-    //               this.whatsappLink = `https://wa.me/91${whatsapp}?text=${text}`;
-    //             }
-    //           });
-    //         }
-    //       }
-    //     });
-    //   });
-    this.visitService.patientInfo(this.patientId)
-    .subscribe(info => {
-      this.patientInfo = info;
-      info.person['attributes'].forEach(attri => {
-        if (!attri.attributeType.display.match('Telephone Number')) {
-          // this.phoneNo = attri.value;
-        }
+    const visitId = this.route.snapshot.params['visit_id'];
+    this.visitService.fetchVisitDetails(visitId)
+      .subscribe(visitDetails => {
+        this.patientDetails = visitDetails.patient;
+        visitDetails.encounters.forEach(encounter => {
+          if (encounter.display.match('ADULTINITIAL') != null) {
+            const providerAttribute = encounter.encounterProviders[0].provider.attributes;
+            if (providerAttribute.length) {
+              providerAttribute.forEach(attribute => {
+                if (attribute.display.match('phoneNumber') != null) {
+                  this.phoneNo = attribute.value;
+                }
+                if (attribute.display.match('whatsapp') != null) {
+                  const whatsapp = attribute.value;
+                  // tslint:disable-next-line: max-line-length
+                  const text = encodeURI(`Hello I'm calling for patient ${this.patientDetails.person.display} OpenMRS ID ${this.patientDetails.identifiers[0].identifier}`);
+                  this.whatsappLink = `https://wa.me/91${whatsapp}?text=${text}`;
+                }
+              });
+            }
+          }
+        });
       });
-    });
-    this.visitService.getAttribute(this.visitUuid)
+    this.visitService.getAttribute(visitId)
       .subscribe(response => {
         const result = response.results;
         if (result.length !== 0) {
@@ -98,57 +76,14 @@ export class PatientInteractionComponent implements OnInit {
       });
   }
 
-  getWhatsApp = () => {
-    this.leftDiagnosis = [];
-    this.rightDiagnosis = [];
-    let leftEye = '', rightEye = '', flag = 0, createMsg = false;
-    [
-      {concept: this.conceptLeftEyeDiagnosis, name: 'leftDiagnosis'},
-      {concept: this.conceptRightEyeDiagnosis, name: 'rightDiagnosis'},
-      {concept: this.ReferralLocationConcept, name: 'referralLocation'}
-    ].forEach((each) => {
-      this.diagnosisService.getObs(this.patientId, each.concept)
-      .subscribe(response => {
-        flag++;
-        response.results.forEach((obs, index) => {
-          if (obs.encounter.visit.uuid === this.visitUuid) {
-            this[each.name].push(obs);
-            if (flag === 2 && index + 1 === response.results.length) {
-              createMsg = true;
-            }
-          }
-          if (flag === 3 && createMsg) {
-            // tslint:disable-next-line: max-line-length
-            for (let j = 0; j < this.rightDiagnosis.length; j++) {
-              rightEye += `${this.rightDiagnosis[j].value}${this.rightDiagnosis.length !== j + 1 ? ', ' : ''}`;
-            }
-            for (let i = 0; i < this.leftDiagnosis.length; i++) {
-              leftEye += `${this.leftDiagnosis[i].value}${this.leftDiagnosis.length !==  i + 1 ? ', ' : ''}`;
-            }
-            setTimeout(() => {
-              const text = `An ophthalmologist from Aravind Eye Hospital has reviewed ${this.patientInfo.person.display}’s visit on ${new Date().toLocaleDateString()}. The result of the screening is
-              %0aRight Eye: ${rightEye ? rightEye : ''}
-              %0aLeft Eye: ${leftEye ? leftEye : ''}
-              %0a
-              ${this.referralLocation.length ?
-              `%0aIt is recommended that ${this.patientInfo.person.display} come to the nearest ${this.referralLocation[0].value} to receive free additional testing and treatment.` : ''}
-              %0a
-              %0aFor questions, please call: (0413) 261 9100`;
-              window.open(`https://wa.me/91${this.phoneNo}?text=${text}`, '_blank');
-            }, 1000);
-          }
-        });
-      });
-    });
-  }
-
   submit() {
+    const visitId = this.route.snapshot.params['visit_id'];
     const formValue = this.interaction.value;
     const value = formValue.interaction;
     const providerDetails = getFromStorage('provider');
     const providerUuid = providerDetails.uuid;
     if (providerDetails && providerUuid === getEncounterProviderUUID()) {
-      this.visitService.getAttribute(this.visitUuid)
+      this.visitService.getAttribute(visitId)
         .subscribe(response => {
           const result = response.results;
           if (result.length !== 0) {
@@ -157,7 +92,7 @@ export class PatientInteractionComponent implements OnInit {
               'attributeType': '6cc0bdfe-ccde-46b4-b5ff-e3ae238272cc',
               'value': value
             };
-            this.visitService.postAttribute(this.visitUuid, json)
+            this.visitService.postAttribute(visitId, json)
               .subscribe(response1 => {
                 this.msg.push({ uuid: response1.uuid, value: response1.value });
               });
@@ -200,7 +135,8 @@ export class PatientInteractionComponent implements OnInit {
   }
 
   delete(i) {
-    this.visitService.deleteAttribute(this.visitUuid, i)
+    const visitId = this.route.snapshot.params['visit_id'];
+    this.visitService.deleteAttribute(visitId, i)
       .subscribe(res => {
         this.msg = [];
       });

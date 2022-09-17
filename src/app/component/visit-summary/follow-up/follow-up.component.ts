@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EncounterService } from 'src/app/services/encounter.service';
 import { ActivatedRoute } from '@angular/router';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DiagnosisService } from 'src/app/services/diagnosis.service';
 import { DatePipe } from '@angular/common';
 import { transition, trigger, style, animate, keyframes } from '@angular/animations';
@@ -36,9 +36,9 @@ export class FollowUpComponent implements OnInit {
   visitUuid: string;
   errorText: string;
 
-  followForm = new UntypedFormGroup({
-    date: new UntypedFormControl('', [Validators.required]),
-    advice: new UntypedFormControl('')
+  followForm = new FormGroup({
+    date: new FormControl('', [Validators.required]),
+    advice: new FormControl('')
   });
 
   constructor(private service: EncounterService,

@@ -1,35 +1,40 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
-
-
-@font-face {
-    font-family: arty;
-    src: url(assets/fonts/Arty.otf) format("opentype");
-  }
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
 
 @font-face {
-    font-family: asem;
-    src: url(assets/fonts/Asem.otf) format("opentype");
-  }
+  font-family: arty;
+  src: url(assets/fonts/Arty.otf) format("opentype");
+}
 
 @font-face {
-    font-family: youthness;
-    src: url(assets/fonts/Youthness.ttf) format("opentype");
-  }
+  font-family: asem;
+  src: url(assets/fonts/Asem.otf) format("opentype");
+}
 
-  body {
-    background-color: #f1f4f6;
-    margin: 0;
-  }
+@font-face {
+  font-family: youthness;
+  src: url(assets/fonts/Youthness.ttf) format("opentype");
+}
 
-  html, body{
-    height: 100%;
-  }
+body {
+  background-color: #f1f4f6;
+  margin: 0;
+}
 
-  .alert-primary{
-    display: flex!important;
-  }
+html,
+body {
+  height: 100%;
+}
 
-  .doctor-value{
-    width: 92%;
-  }
+.alert-primary {
+  display: flex !important;
+}
+
+.doctor-value {
+  width: 92%;
+}
+
+.mat-datepicker-content {
+  transform: scale(0.75);
+  -moz-transform: scale(0.75);
+}

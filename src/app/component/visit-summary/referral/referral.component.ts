@@ -40,14 +40,19 @@ export class ReferralComponent implements OnInit {
   referralObs: object = {};
   referralTimeObs: object = {};
 
-  referralConcepts = [{ concept: this.referralConcept, name: 'referral' },
-  { concept: this.referralTimeConcept, name: 'referralTime' }
+  referralConcepts = [
+    { concept: this.referralConcept, name: 'referral' },
+    { concept: this.referralTimeConcept, name: 'referralTime' }
   ];
-  referralConceptsReview1 = [{ concept: this.referralConceptReview1, name: 'referral' },
-  { concept: this.referralTimeConceptConceptReview1, name: 'referralTime' }
+
+  referralConceptsReview1 = [
+    { concept: this.referralConceptReview1, name: 'referral' },
+    { concept: this.referralTimeConceptConceptReview1, name: 'referralTime' }
   ];
-  referralConceptsReview2 = [{ concept: this.referralConceptReview2, name: 'referral' },
-  { concept: this.referralTimeConceptConceptReview2, name: 'referralTime' }
+
+  referralConceptsReview2 = [
+    { concept: this.referralConceptReview2, name: 'referral' },
+    { concept: this.referralTimeConceptConceptReview2, name: 'referralTime' }
   ];
   rightConcept: string;
   coordinator: Boolean = getFromStorage('coordinator') || false;
@@ -62,6 +67,7 @@ export class ReferralComponent implements OnInit {
     this.patientId = this.route.snapshot.params['patient_id'];
     const reviewVisit = checkReview(this.visitUuid);
     this.rightConcept = reviewVisit?.reviewType === 1 ? 'referralConceptsReview1' : reviewVisit?.reviewType === 2 ? 'referralConceptsReview2' : 'referralConcepts';
+    // console.log(this.rightConcept)
     this[this.rightConcept].forEach(each => {
       this.diagnosisService.getObs(this.patientId, each.concept)
         .subscribe(response => {
@@ -90,7 +96,7 @@ export class ReferralComponent implements OnInit {
     const providerUuid = providerDetails.uuid;
     if (providerDetails && providerUuid === getEncounterProviderUUID()) {
       this.encounterUuid = getEncounterUUID();
-      const concept = type === 'referral' ? this.referralConcept : this.referralTimeConcept;
+      const concept = type === 'referral' ? this[this.rightConcept][0].concept : this[this.rightConcept][1].concept;
       const value = type === 'referral' ? this.referral : this.referralTime;
       const json = {
         concept,

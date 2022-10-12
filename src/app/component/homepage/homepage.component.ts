@@ -103,7 +103,7 @@ export class HomepageComponent implements OnInit {
     this.visitService.getVisits()
       .subscribe(response => {
         const visits = response.results;
-        let length = 0, flagLength = 0, visitNoteLength = 0, completeVisitLength = 0;
+        let length = 0, flagLength = 0, visitNoteLength = 0, completeVisitLength = 0, review = 0;
         visits.forEach(async active => {
           if (active.encounters.length > 0) {
             let value = active.encounters[0].display;
@@ -144,6 +144,10 @@ export class HomepageComponent implements OnInit {
                         const visitCompleteValues = this.assignValueToProperty(active, 'Visit Complete', mainDoctor);
                         this.completedVisit.push(visitCompleteValues);
                         completeVisitLength += 1;
+                      } else {
+                        const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
+                        this.waitingVisit.push(waitingListValues);
+                        length += 1;
                       }
                     } else {
                       const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
@@ -184,11 +188,18 @@ export class HomepageComponent implements OnInit {
                     if (mainDoctor) {
                       const visitCompleteValues = this.assignValueToProperty(active, 'Visit Complete', mainDoctor);
                       this.completedVisit.push(visitCompleteValues);
+                      this.review1.push({ ...visitCompleteValues });
                       completeVisitLength += 1;
+                    } else {
+                      const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
+                      this.waitingVisit.push(waitingListValues);
+                      this.review1.push({ ...waitingListValues });
+                      length += 1;
                     }
                   } else {
                     const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
                     this.waitingVisit.push(waitingListValues);
+                    this.review1.push({ ...waitingListValues });
                     length += 1;
                   }
                 } else if (visitNote.length) {
@@ -196,15 +207,18 @@ export class HomepageComponent implements OnInit {
                   if (mainDoctor) {
                     const visitNoteValues = this.assignValueToProperty(active, 'Visit Note', mainDoctor);
                     this.progressVisit.push(visitNoteValues);
+                    this.review1.push({ ...visitNoteValues });
                     visitNoteLength += 1;
                   } else {
                     const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
                     this.waitingVisit.push(waitingListValues);
+                    this.review1.push({ ...waitingListValues });
                     length += 1;
                   }
                 } else {
                   const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
                   this.waitingVisit.push(waitingListValues);
+                  this.review1.push({ ...waitingListValues });
                   length += 1;
                 }
               }
@@ -237,6 +251,8 @@ export class HomepageComponent implements OnInit {
         // saveToStorage('allAwaitingConsult', this.waitingVisit);
         saveToStorage('allReviewVisit1', this.review1);
         saveToStorage('allReviewVisit2', this.review2);
+        console.log('review 1', this.review1)
+        console.log('review 2', this.review2)
         this.setSpiner = false;
         this.activePatient = length;
         this.flagPatientNo = flagLength;

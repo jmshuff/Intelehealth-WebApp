@@ -124,14 +124,14 @@
           <div>
             <mat-card>
               <h5>Lens Status</h5>  
-              <div class="patient-complaint-checkbox ft-13" *ngFor="let data of lensStatus" >
+              <div class="patient-complaint-checkbox ft-13"  >
                 <mat-radio-group aria-label="Select an option" class="radio-group" formControlName="lensStatusRight">
-                  <mat-radio-button class="radio-button" 
+                  <mat-radio-button class="radio-button" name="radio1" *ngFor="let data of lensStatus"
                     [value]="data.value">Right eye</mat-radio-button>
                 </mat-radio-group>
-                <div>{{ data.value }}</div>
+                <div><div  *ngFor="let data of lensStatus" class="lens-status-checkbox-text">{{ data.value }}</div></div>
                 <mat-radio-group class="radio-group" formControlName="lensStatusLeft">
-                  <mat-radio-button class="radio-button" 
+                  <mat-radio-button class="radio-button" name="radio2" *ngFor="let data of lensStatus"
                     [value]="data.value">Left eye</mat-radio-button>
                 </mat-radio-group>
             </div>

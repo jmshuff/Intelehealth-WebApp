@@ -68,7 +68,7 @@ export class VisitSummaryComponent implements OnInit {
                   saveToStorage('visitNoteProvider', rightEnco[0]);
                 }
               } else {
-                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
+                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
                 if (rightEnco.length) {
                   saveToStorage('visitNoteProvider', rightEnco[0]);
                 }

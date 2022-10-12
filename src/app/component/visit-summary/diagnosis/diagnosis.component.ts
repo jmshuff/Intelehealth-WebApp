@@ -81,12 +81,16 @@ export class DiagnosisComponent implements OnInit {
 
   diagnosisConceptReview1 = [
     {concept: this.conceptLeftLensEyeDiagnosisReview1, name: 'leftLensDiagnosis'},
-    {concept: this.conceptRightLensEyeDiagnosisReview1 , name: 'rightLensDiagnosis'}
+    {concept: this.conceptRightLensEyeDiagnosisReview1 , name: 'rightLensDiagnosis'},
+    {concept: this.conceptadditionalPathologyLeftReview1, name: 'leftPathologyDiagnosis'},
+    {concept: this.conceptadditionalPathologyRightReview1, name: 'rightPathologyDiagnosis'}
   ];
 
   diagnosisConceptReview2 = [
     {concept: this.conceptLeftLensEyeDiagnosisReview2, name: 'leftLensDiagnosis'},
-    {concept: this.conceptRightLensEyeDiagnosisReview2 , name: 'rightLensDiagnosis'}
+    {concept: this.conceptRightLensEyeDiagnosisReview2 , name: 'rightLensDiagnosis'},
+    {concept: this.conceptadditionalPathologyLeftReview2, name: 'leftPathologyDiagnosis'},
+    {concept: this.conceptadditionalPathologyRightReview2, name: 'rightPathologyDiagnosis'}
   ];
 
   rightConcept: string;
@@ -111,6 +115,7 @@ export class DiagnosisComponent implements OnInit {
     this.patientId = this.route.snapshot.params['patient_id'] || this.data.patientId;
     const reviewVisit = checkReview(this.visitUuid);
     this.rightConcept = reviewVisit?.reviewType === 1 ? 'diagnosisConceptReview1' : reviewVisit?.reviewType === 2 ? 'diagnosisConceptReview2' : 'diagnosisConcept';
+    // console.log(this.rightConcept)
     this[this.rightConcept].forEach(each => {
       this.diagnosisService.getObs(this.patientId, each.concept)
       .subscribe(response => {
@@ -215,7 +220,8 @@ export class DiagnosisComponent implements OnInit {
           if (filteredImage?.length) {
             const payload = {
               id: uuidv4(),
-              diagnosis: json.value,
+              diagnosis: !type ? json.value : '',
+              additional_pathology: type ? json.value : '',
               created_by: providerDetails.person.display,
               images: []
             };

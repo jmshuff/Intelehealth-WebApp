@@ -1,7 +1,7 @@
 <div class="mt-50">
   <mat-spinner *ngIf="setSpiner" [diameter]="70"></mat-spinner>
   <div class="container" [ngClass]="setSpiner ? 'spin' : ''">
-    <section class="example-section">
+    <!-- <section class="example-section">
       Doctor
       <mat-slide-toggle
         (change)="onChange($event.checked)"
@@ -10,15 +10,15 @@
       >
         Coordinator
       </mat-slide-toggle>
-    </section>
+    </section> -->
     <div *ngIf="!coordinator">
       <div class="modal-body row">
         <div class="col-sm-3" style="padding: 3px">
-          <div class="card text-white" style="background: #dd3c62">
+          <div class="card text-white" style="background: #17a2b8">
             <div class="card-body">
               <div class="text-left">
-                PRIORITY VISITS<span style="float: right">{{
-                  flagPatientNo
+                AWAITING DOCTOR<span style="float: right">{{
+                  awaitingDoctor.length
                 }}</span>
               </div>
             </div>
@@ -28,19 +28,19 @@
           <div class="card text-white" style="background: #f6b825">
             <div class="card-body">
               <div class="text-left">
-                AWAITING CONSULT<span style="float: right">{{
-                  activePatient
+                AWAITING HEALTHWORKER<span style="float: right">{{
+                  awaitingHealthworker.length
                 }}</span>
               </div>
             </div>
           </div>
         </div>
         <div class="col-sm-3" style="padding: 3px">
-          <div class="card text-white" style="background: #17a2b8">
+          <div class="card text-white" style="background: #dd3c62">
             <div class="card-body">
               <div class="text-left">
-                VISITS IN PROGRESS<span style="float: right">{{
-                  visitNoteNo
+                BASE HOSPITAL FOLLOW-UP<span style="float: right">{{
+                  baseHospital.length
                 }}</span>
               </div>
             </div>
@@ -51,7 +51,7 @@
             <div class="card-body">
               <div class="text-left">
                 COMPLETED VISITS<span style="float: right">{{
-                  completeVisitNo
+                  completedVisit.length
                 }}</span>
               </div>
             </div>
@@ -62,47 +62,47 @@
       <!-- PRIORITY Visit -->
       <mat-accordion class="example-headers-align" [multi]="true">
         <mat-expansion-panel
-          [expanded]="flagVisit.length > 0"
-          id="flagged-table"
+          [expanded]="awaitingDoctor.length > 0"
+          id="awaitingDoctor-table"
         >
           <mat-expansion-panel-header>
-            <mat-panel-title><h5>PRIORITY VISITS</h5></mat-panel-title>
+            <mat-panel-title><h5>AWAITING DOCTOR REVIEW</h5></mat-panel-title>
           </mat-expansion-panel-header>
-          <ng-container *ngIf="flagVisit.length > 0">
-            <app-tables [data]="flagVisit" [type]="'flag'" (getType)="setType($event)"></app-tables>
+          <ng-container *ngIf="awaitingDoctor.length > 0">
+            <app-tables [data]="awaitingDoctor" [type]="'awaitingDoctor'" (getType)="setType($event)"></app-tables>
           </ng-container>
         </mat-expansion-panel>
 
         <!-- Queue Visit table -->
         <mat-expansion-panel
-          [expanded]="waitingVisit.length > 0"
-          id="queued-table"
+          [expanded]="awaitingHealthworker.length > 0"
+          id="awaitingHealthworker-table"
         >
           <mat-expansion-panel-header>
-            <mat-panel-title><h5>AWAITING CONSULT</h5></mat-panel-title>
+            <mat-panel-title><h5>AWAITING HEALTHWORKER FOLLOW-UP</h5></mat-panel-title>
           </mat-expansion-panel-header>
-          <ng-container *ngIf="waitingVisit.length > 0">
-            <app-tables [data]="waitingVisit" [type]="'waiting'" (getType)="setType($event)"></app-tables>
+          <ng-container *ngIf="awaitingHealthworker.length > 0">
+            <app-tables [data]="awaitingHealthworker" [type]="'awaitingHealthworker'" (getType)="setType($event)"></app-tables>
           </ng-container>
         </mat-expansion-panel>
 
         <!-- In Progress Visit -->
         <mat-expansion-panel
-          [expanded]="progressVisit.length > 0"
-          id="visit-in-progress"
+          [expanded]="baseHospital.length > 0"
+          id="baseHospital-table"
         >
           <mat-expansion-panel-header>
-            <mat-panel-title><h5>VISITS IN PROGRESS</h5></mat-panel-title>
+            <mat-panel-title><h5>BASE HOSPITAL FOLLOW-UP</h5></mat-panel-title>
           </mat-expansion-panel-header>
-          <ng-container *ngIf="progressVisit.length > 0">
-            <app-tables [data]="progressVisit" [type]="'progress'" (getType)="setType($event)"></app-tables>
+          <ng-container *ngIf="baseHospital.length > 0">
+            <app-tables [data]="baseHospital" [type]="'baseHospital'" (getType)="setType($event)"></app-tables>
           </ng-container>
         </mat-expansion-panel>
 
         <!-- Complete Visit -->
         <mat-expansion-panel
           [expanded]="completedVisit.length > 0"
-          id="visit-complete"
+          id="visit-complete-table"
         >
           <mat-expansion-panel-header>
             <mat-panel-title><h5>COMPLETED VISITS</h5></mat-panel-title>

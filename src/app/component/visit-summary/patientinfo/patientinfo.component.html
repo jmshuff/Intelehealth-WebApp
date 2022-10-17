@@ -1,69 +1,20 @@
 <h4><i class="fas fa-info-circle"></i> Patient Information</h4>
 <div *ngIf="patientInfo" style="width: 60%;">
-        <!-- <div class="col-md-6" > -->
-            <div class="flex-row">
-                <div *ngIf="!coordinator || showDetails">
-                    <div id="name"><b>Name:</b> {{patientInfo.display}}</div>
-                </div>
-                <div *ngIf="!coordinator || showDetails">
-                    <div id="age"><b>Age/Sex:</b> {{patientInfo.birthdate}} {{patientInfo.gender}}</div>
-                </div>
-                <div *ngIf="!showDetails">
-                    <div id="openmrs-id"><b>OpenMRS ID:</b> {{patientInfo.patientIdentifier}}</div>
-                </div>
-            </div>
-            <div class="flex-row">
-                <div *ngIf="!coordinator || showDetails"><b>Address:</b> {{patientInfo.preferredAddress.cityVillage}}</div>
-                <div *ngIf="!coordinator || showDetails"><b>Phone:</b> {{patientInfo.telephone}} | <span *ngIf="patientInfo.occupation"></span></div>
-            </div>
-            <div>
-                <app-past-medical-history></app-past-medical-history>
-            </div>
-           
-          <!-- <table class="table table-borderless table-sm">
-                <tbody *ngIf="patientInfo">
-                    <tr *ngIf="!coordinator || showDetails"> 
-                        <th scope="row">Name</th>
-                        <td>{{patientInfo.display}}</td>
-                    </tr>
-                    <tr *ngIf="!showDetails">
-                        <th scope="row">OpenMRS ID</th>
-                        <td>{{patientInfo.patientIdentifier}}</td>
-                    </tr>
-                    <tr *ngIf="!coordinator || showDetails">
-                        <th scope="row">Sex</th>
-                        <td>{{patientInfo.gender}}</td>
-                    </tr>
-                    <tr *ngIf="!coordinator || showDetails">
-                        <th scope="row">Age</th>
-                        <td>{{patientInfo.birthdate}}</td>
-                    </tr>
-                    <tr *ngIf="!coordinator || showDetails">
-                        <th scope="row">Village</th>
-                        <td>{{patientInfo.preferredAddress.cityVillage}}</td>
-                    </tr>
-                    <tr *ngIf="!coordinator || showDetails">
-                        <th scope="row">Contact Info</th>
-                        <td *ngIf="patientInfo.telephone && !editMobile">{{patientInfo.telephone}} | <span *ngIf="patientInfo.occupation">{{patientInfo.occupation}}</span> <i class="material-icons" style="vertical-align: bottom;cursor: pointer;" (click)="onClick('edit', patientInfo.telephone)">edit</i></td>
-                        <td *ngIf="editMobile"><input matInput type="number" value={{newPhone}} (keyup)="onChange($event.target.value)" style="width: 200px"><i class="material-icons" style="vertical-align: bottom;cursor: pointer;" (click)="onClick()">done</i></td>
-                    </tr>
-                    <tr *ngIf="!coordinator || showDetails">
-                        <th scope="row">Attender Phone Number</th>
-                        <td *ngIf="patientInfo.occupation">{{patientInfo.occupation}}</td>
-                    </tr>
-                    <tr *ngIf="!coordinator || showDetails">
-                        <th scope="row">CHW</th>
-                        <td *ngIf="patientInfo.healthWorker">{{patientInfo.healthWorker}}</td>
-                    </tr>
-                </tbody>
-            </table> -->
-        <!-- </div>
-        <div class="col-md-6" *ngIf="!coordinator">
-          <div *ngIf="profileImagePresent" style="text-align: center">
-                <img [src]= image width="40%" height="200">
-            </div>
-            <div *ngIf="!profileImagePresent" style="text-align: center">
-                <img src="../../../../assets/dummy profile image.jpg" width="40%" height="40%">
-            </div>
-        </div> -->
+    <!-- <div class="col-md-6" > -->
+    <div class="flex-row">
+        <div *ngIf="!coordinator || showDetails">
+            <div id="name"><b>Name:</b> {{patientInfo.display}}</div>
+        </div>
+        <div *ngIf="!coordinator || showDetails">
+            <div id="age"><b>Age/Sex:</b> {{patientInfo.birthdate}} {{patientInfo.gender}}</div>
+        </div>
+        <div *ngIf="!showDetails">
+            <div id="openmrs-id"><b>OpenMRS ID:</b> {{patientInfo.patientIdentifier}}</div>
+        </div>
+    </div>
+    <div class="flex-row">
+        <div *ngIf="!coordinator || showDetails"><b>Address:</b> {{patientInfo.preferredAddress.cityVillage}}</div>
+        <div *ngIf="!coordinator || showDetails"><b>Phone:</b> {{patientInfo.telephone}} | <span
+                *ngIf="patientInfo.occupation"></span></div>
+    </div>
 </div>

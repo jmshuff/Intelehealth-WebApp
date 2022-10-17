@@ -33,25 +33,29 @@ export class PrescribedMedicationComponent implements OnInit {
   encounterUuid: string;
   patientId: string;
   visitUuid: string;
-  conceptPrescription = [];
+  conceptPrescription = ['Moxifloxacin 0.5% E/D', 'Gatifloxacin 0.3% E/D', 'Azithromycin 1% E/D', 'Azithromycin 1% E/O',
+      'Aminogen 1% E/D', 'Tobramycin 0.3% E/D', 'Tobramycin 0.3% E/O', 'Natamycin 5% E/D', 'Voriconazole 1% E/D', 'Amphotericin-B 0.5% E/D',
+      'Fluconazole 0.3% E/D', 'Itraconazole 1% E/O', 'Econazole 2% E/D', 'Homatropine Hydrobromide 2% E/D', 'Atropine 1% E/D', 'Iotim, Iobet 0.5% E/D',
+      'Paracetamol 650 mg', 'Diclofenac 75 mg', 'Diamox 250mg'];
   conceptDose = [];
   conceptfrequency = [];
   conceptAdministration = [];
   conceptDurationUnit = [];
   conceptMed = 'c38c0c50-2fd2-4ae3-b7ba-7dd25adca4ca';
 
+
   medForm = new UntypedFormGroup({
     med: new UntypedFormControl('', [Validators.required]),
     dose: new UntypedFormControl('', Validators.min(1)),
     unit: new UntypedFormControl('', [Validators.required]),
-    amount: new UntypedFormControl('', Validators.min(1)),
-    unitType: new UntypedFormControl('', [Validators.required]),
+    // amount: new UntypedFormControl('', Validators.min(1)),
+    // unitType: new UntypedFormControl('', [Validators.required]),
     frequency: new UntypedFormControl('', [Validators.required]),
-    route: new UntypedFormControl(''),
-    reason: new UntypedFormControl(''),
+    // route: new UntypedFormControl(''),
+    // reason: new UntypedFormControl(''),
     duration: new UntypedFormControl('', Validators.min(1)),
     durationUnit: new UntypedFormControl('', [Validators.required]),
-    additional: new UntypedFormControl('')
+    // additional: new UntypedFormControl('')
   });
 
   constructor(
@@ -75,13 +79,13 @@ export class PrescribedMedicationComponent implements OnInit {
         : this.conceptfrequency.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
     )
 
-  searchAdministration = (text$: Observable<string>) =>
-    text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map(term => term.length < 1 ? []
-        : this.conceptAdministration.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
-    )
+  // searchAdministration = (text$: Observable<string>) =>
+  //   text$.pipe(
+  //     debounceTime(200),
+  //     distinctUntilChanged(),
+  //     map(term => term.length < 1 ? []
+  //       : this.conceptAdministration.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+  //   )
 
   searchDose = (text$: Observable<string>) =>
     text$.pipe(
@@ -100,14 +104,14 @@ export class PrescribedMedicationComponent implements OnInit {
     )
 
   ngOnInit() {
-    const prescriptionUuid = 'c25ea0e9-6522-417f-97ec-6e4b7a615254';
-    this.diagnosisService.concept(prescriptionUuid)
-      .subscribe(res => {
-        const result = res.answers;
-        result.forEach(ans => {
-          this.conceptPrescription.push(ans.display);
-        });
-      });
+    // const prescriptionUuid = 'c25ea0e9-6522-417f-97ec-6e4b7a615254';
+    // this.diagnosisService.concept(prescriptionUuid)
+    //   .subscribe(res => {
+    //     const result = res.answers;
+    //     result.forEach(ans => {
+    //       this.conceptPrescription.push(ans.display);
+    //     });
+    //   });
     const doseUnit = '162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
     this.diagnosisService.concept(doseUnit)
       .subscribe(res => {
@@ -124,14 +128,14 @@ export class PrescribedMedicationComponent implements OnInit {
           this.conceptfrequency.push(ans.display);
         });
       });
-    const RouteOfAdministration = '162394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-    this.diagnosisService.concept(RouteOfAdministration)
-      .subscribe(res => {
-        const result = res.setMembers;
-        result.forEach(ans => {
-          this.conceptAdministration.push(ans.display);
-        });
-      });
+    // const RouteOfAdministration = '162394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+    // this.diagnosisService.concept(RouteOfAdministration)
+    //   .subscribe(res => {
+    //     const result = res.setMembers;
+    //     result.forEach(ans => {
+    //       this.conceptAdministration.push(ans.display);
+    //     });
+    //   });
     const conceptDurationUnit = '1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
     this.diagnosisService.concept(conceptDurationUnit)
       .subscribe(res => {
@@ -156,7 +160,7 @@ export class PrescribedMedicationComponent implements OnInit {
     const date = new Date();
     const value = this.medForm.value;
     // tslint:disable-next-line:max-line-length
-    var insertValue = `${value.med}: ${value.dose} ${value.unit}, ${value.amount} ${value.unitType} ${value.frequency}`;
+    var insertValue = `${value.med}: ${value.dose} ${value.unit}, ${value.frequency}`;
     if (value.route) {
       insertValue = `${insertValue} (${value.route})`;
     }

@@ -44,18 +44,22 @@ interface ReferralVisit {
 })
 
 export class HomepageComponent implements OnInit {
+  vitalUUID: String = '67a71486-1a54-468f-ac3e-7091a9a79584';
+  adultinitialUUID: String = '8d5b27bc-c2cc-11de-8d13-0010c6dffd0f';
+  visitNoteUUID: String = 'd7151f82-c1f3-4152-a605-2f9ea7414a79';
+  healthWorkerUUID: String = '809a1df6-8cc6-4d2c-92e7-00f7468f496e';
+  referToBaseUUID: String = '4084bb49-c7ba-46c1-bfd4-0f1e38327748';
+  completeVisitUUID: String = 'bd1fbfaa-f5fb-4ebd-b75c-564506fc309e';
   value: any = {};
   referralVisit: ReferralHomepage = { awaitingCall : [], awaitingHospital: [], totalVisistInHospial: 0};
   referralCallValues: ReferralVisit[] = [];
   referralHospitalValues: ReferralVisit[] = [];
-  activePatient: number;
-  flagPatientNo: number;
-  visitNoteNo: number;
-  completeVisitNo: number;
-  flagVisit: VisitData[] = [];
-  waitingVisit: VisitData[] = [];
-  progressVisit: VisitData[] = [];
+
+  awaitingDoctor: VisitData[] = [];
+  awaitingHealthworker: VisitData[] = [];
+  baseHospital: VisitData[] = [];
   completedVisit: VisitData[] = [];
+
   setSpiner = true;
   review1: VisitData[] = [];
   review2: VisitData[] = [];
@@ -73,12 +77,6 @@ export class HomepageComponent implements OnInit {
       this.sessionService.provider(userDetails.uuid)
         .subscribe(provider => {
           saveToStorage('provider', provider.results[0]);
-          // const attributes = provider.results[0].attributes;
-          // attributes.forEach(element => {
-          //   if (element.attributeType.uuid === 'ed1715f5-93e2-404e-b3c9-2a2d9600f062' && !element.voided) {
-          //     this.specialization = element.value;
-          //   }
-          // });
         });
     } else { this.authService.logout(); }
     if (this.coordinator) {
@@ -103,161 +101,31 @@ export class HomepageComponent implements OnInit {
     this.visitService.getVisits()
       .subscribe(response => {
         const visits = response.results;
-        let length = 0, flagLength = 0, visitNoteLength = 0, completeVisitLength = 0, review = 0;
         visits.forEach(async active => {
           if (active.encounters.length > 0) {
-            let value = active.encounters[0].display;
-            if (value.match('Eye Camp')) {
-              value = active.encounters[1].display;
-            }
-            if (value.match('Flagged')) {
-              if (!active.encounters[0].voided) {
-                const values = this.assignValueToProperty(active, 'Flagged');
-                this.flagVisit.push(values);
-                flagLength += 1;
-              }
-            } else if (value.match('ADULTINITIAL') || value.match('Vitals')) {
+            console.log(active)
+            let encounterUUID = active.encounters[0].encounterType.uuid;
+            if (encounterUUID === this.adultinitialUUID || encounterUUID === this.vitalUUID) {
               const values = this.assignValueToProperty(active, 'ADULTINITIAL');
-              this.waitingVisit.push(values);
-              length += 1;
-            } else if (value.match('Review 2')) {
-              const sameProvider: any = this.processReview(active.encounters[0]);
-              const values = this.assignValueToProperty(active, sameProvider ? 'Visit Note' : 'ADULTINITIAL', sameProvider);
-              if (sameProvider) {
-                this.review2.push({ ...values, seen: true });
-                this.completedVisit.push(values);
-                completeVisitLength += 1;
-              } else {
-                const review1: any = this.processReview(active.encounters[1]);
-                const newValues = this.assignValueToProperty(active, review1 ? 'Visit Note' : 'ADULTINITIAL', review1);
-                if (review1) {
-                  this.review1.push({ ...newValues, seen: true });
-                  this.progressVisit.push(newValues);
-                  visitNoteLength += 1;
-                } else {
-                  const visitComplete = active.encounters.filter(enc => enc.display.match('Visit Complete'));
-                  const visitNote = active.encounters.filter(enc => enc.display.match('Visit Note'));
-                  if (visitComplete.length) {
-                    if (visitNote.length) {
-                      const mainDoctor: any = this.processReview(visitNote[0]);
-                      if (mainDoctor) {
-                        const visitCompleteValues = this.assignValueToProperty(active, 'Visit Complete', mainDoctor);
-                        this.completedVisit.push(visitCompleteValues);
-                        completeVisitLength += 1;
-                      } else {
-                        const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
-                        this.waitingVisit.push(waitingListValues);
-                        length += 1;
-                      }
-                    } else {
-                      const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
-                      this.waitingVisit.push(waitingListValues);
-                      length += 1;
-                    }
-                  } else if (visitNote.length) {
-                    const mainDoctor: any = this.processReview(visitNote[0]);
-                    if (mainDoctor) {
-                      const visitNoteValues = this.assignValueToProperty(active, 'Visit Note', mainDoctor);
-                      this.progressVisit.push(visitNoteValues);
-                      visitNoteLength += 1;
-                    } else {
-                      const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
-                      this.waitingVisit.push(waitingListValues);
-                      length += 1;
-                    }
-                  } else {
-                    const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
-                    this.waitingVisit.push(waitingListValues);
-                    length += 1;
-                  }
-                }
-              }
-            } else if (value.match('Review 1')) {
-              const sameProvider: any = this.processReview(active.encounters[0]);
-              if (sameProvider) {
-                const review1Values = this.assignValueToProperty(active, 'Visit Note', sameProvider);
-                this.review1.push({ ...review1Values, seen: true });
-                this.completedVisit.push(review1Values);
-                completeVisitLength += 1;
-              } else {
-                const visitComplete = active.encounters.filter(enc => enc.display.match('Visit Complete'));
-                const visitNote = active.encounters.filter(enc => enc.display.match('Visit Note'));
-                if (visitComplete.length) {
-                  if (visitNote.length) {
-                    const mainDoctor: any = this.processReview(visitNote[0]);
-                    if (mainDoctor) {
-                      const visitCompleteValues = this.assignValueToProperty(active, 'Visit Complete', mainDoctor);
-                      this.completedVisit.push(visitCompleteValues);
-                      this.review1.push({ ...visitCompleteValues });
-                      completeVisitLength += 1;
-                    } else {
-                      const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
-                      this.waitingVisit.push(waitingListValues);
-                      this.review1.push({ ...waitingListValues });
-                      length += 1;
-                    }
-                  } else {
-                    const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
-                    this.waitingVisit.push(waitingListValues);
-                    this.review1.push({ ...waitingListValues });
-                    length += 1;
-                  }
-                } else if (visitNote.length) {
-                  const mainDoctor: any = this.processReview(visitNote[0]);
-                  if (mainDoctor) {
-                    const visitNoteValues = this.assignValueToProperty(active, 'Visit Note', mainDoctor);
-                    this.progressVisit.push(visitNoteValues);
-                    this.review1.push({ ...visitNoteValues });
-                    visitNoteLength += 1;
-                  } else {
-                    const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
-                    this.waitingVisit.push(waitingListValues);
-                    this.review1.push({ ...waitingListValues });
-                    length += 1;
-                  }
-                } else {
-                  const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
-                  this.waitingVisit.push(waitingListValues);
-                  this.review1.push({ ...waitingListValues });
-                  length += 1;
-                }
-              }
-            } else if (value.match('Visit Note')) {
-              const sameProvider: any = this.processReview(active.encounters[0]);
-              const values = this.assignValueToProperty(active, sameProvider ? 'Visit Note' : 'ADULTINITIAL', sameProvider);
-              if (sameProvider) {
-                this.progressVisit.push(values);
-                visitNoteLength += 1;
-              } else {
-                this.review1.push(values);
-                this.waitingVisit.push(values);
-                length += 1;
-              }
-            } else if (value.match('Visit Complete')) {
-              const sameProvider: any = this.processReview(active.encounters[1]);
-              const values = this.assignValueToProperty(active, sameProvider ? 'Visit Complete' : 'ADULTINITIAL', sameProvider);
-              if (sameProvider) {
-                this.completedVisit.push(values);
-                completeVisitLength += 1;
-              } else {
-                this.review1.push(values);
-                this.waitingVisit.push(values);
-                length += 1;
-              }
+              this.awaitingDoctor.push(values);
+            } else if (encounterUUID === this.healthWorkerUUID) {
+              const values = this.assignValueToProperty(active, 'HEALTH WORKER');
+              this.awaitingHealthworker.push(values);
+            } else if (encounterUUID === this.referToBaseUUID) {
+              const values = this.assignValueToProperty(active, 'BASE HOSPITAL');
+              this.baseHospital.push(values);
+            } else if (encounterUUID === this.completeVisitUUID) {
+              const values = this.assignValueToProperty(active, 'VISIT COMPLETE');
+              this.completedVisit.push(values);
             }
           }
           this.value = {};
         });
-        // saveToStorage('allAwaitingConsult', this.waitingVisit);
         saveToStorage('allReviewVisit1', this.review1);
         saveToStorage('allReviewVisit2', this.review2);
         console.log('review 1', this.review1)
         console.log('review 2', this.review2)
         this.setSpiner = false;
-        this.activePatient = length;
-        this.flagPatientNo = flagLength;
-        this.visitNoteNo = visitNoteLength;
-        this.completeVisitNo = completeVisitLength;
       }, err => {
         if (err.error instanceof Error) {
           this.snackbar.open('Client-side error', null, { duration: 4000 });
@@ -379,12 +247,12 @@ export class HomepageComponent implements OnInit {
   setType(type) {
     if (type === 'complete') {
       saveToStorage('allAwaitingConsult', this.completedVisit);
-    } else if (type === 'progress') {
-      saveToStorage('allAwaitingConsult', this.progressVisit);
-    } else if (type === 'waiting') {
-      saveToStorage('allAwaitingConsult', this.waitingVisit);
+    } else if (type === 'baseHospital') {
+      saveToStorage('allAwaitingConsult', this.baseHospital);
+    } else if (type === 'awaitingHealthworker') {
+      saveToStorage('allAwaitingConsult', this.awaitingHealthworker);
     } else {
-      saveToStorage('allAwaitingConsult', this.flagVisit);
+      saveToStorage('allAwaitingConsult', this.awaitingDoctor);
     }
   }
 

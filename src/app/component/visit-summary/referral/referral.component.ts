@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { DiagnosisService } from 'src/app/services/diagnosis.service';
+import { EncounterService } from 'src/app/services/encounter.service';
 declare var getEncounterProviderUUID: any, getFromStorage: any, getEncounterUUID: any, checkReview: any;
 
 @Component({
@@ -33,10 +34,10 @@ export class ReferralComponent implements OnInit {
   referralTimeConceptConceptReview2: String = '1655c4eb-e0aa-4e4c-bea9-dbe72619489d';
 
   encounterUuid: string;
-  patientId: string;
+  patientUuid: string;
   visitUuid: string;
   referral: String;
-  referralTime: String;
+  referralTime: Number;
   referralObs: object = {};
   referralTimeObs: object = {};
 
@@ -58,18 +59,18 @@ export class ReferralComponent implements OnInit {
   coordinator: Boolean = getFromStorage('coordinator') || false;
 
   constructor(
+    private encounterService: EncounterService,
     private diagnosisService: DiagnosisService,
     private snackbar: MatSnackBar,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.visitUuid = this.route.snapshot.paramMap.get('visit_id');
-    this.patientId = this.route.snapshot.params['patient_id'];
+    this.patientUuid = this.route.snapshot.params['patient_id'];
     const reviewVisit = checkReview(this.visitUuid);
     this.rightConcept = reviewVisit?.reviewType === 1 ? 'referralConceptsReview1' : reviewVisit?.reviewType === 2 ? 'referralConceptsReview2' : 'referralConcepts';
-    // console.log(this.rightConcept)
     this[this.rightConcept].forEach(each => {
-      this.diagnosisService.getObs(this.patientId, each.concept)
+      this.diagnosisService.getObs(this.patientUuid, each.concept)
         .subscribe(response => {
           response.results.forEach(obs => {
             if (obs.encounter.visit.uuid === this.visitUuid) {
@@ -86,21 +87,38 @@ export class ReferralComponent implements OnInit {
   }
 
   onChangeHandler = (type, value) => {
-    this[type] = value;
-    this.save(type);
+    if (type === 'vistComplete') {
+      this.referral = value;
+      this.save('referral', true, 'vistComplete');
+    } else if (type === 'baseHospital') {
+      this.referral = value;
+      this.save('referral', true, 'baseHospital');
+    } else if (type === 'healthworker') {
+      this.referral = value;
+      this.save('referral', true, 'healthworker');
+    } else {
+      this[type] = value;
+      this.save(type);
+    }
   }
 
-  save = (type) => {
+  calculateDays = (value) => {
+    let todayDate = new Date();
+    var result = todayDate.setDate(todayDate.getDate() + value);
+    return new Date(result)
+  }
+
+  save = (type, createEncounter = false, typeEncounter = '') => {
     const date = new Date();
     const providerDetails = getFromStorage('provider');
     const providerUuid = providerDetails.uuid;
     if (providerDetails && providerUuid === getEncounterProviderUUID()) {
       this.encounterUuid = getEncounterUUID();
       const concept = type === 'referral' ? this[this.rightConcept][0].concept : this[this.rightConcept][1].concept;
-      const value = type === 'referral' ? this.referral : this.referralTime;
+      const value = type === 'referral' ? this.referral : this.calculateDays(this.referralTime);
       const json = {
         concept,
-        person: this.patientId,
+        person: this.patientUuid,
         obsDatetime: date,
         value,
         encounter: this.encounterUuid
@@ -112,6 +130,9 @@ export class ReferralComponent implements OnInit {
         };
         this[`${type}Obs`] = data;
       });
+      if (createEncounter) {
+        this.createEncounter(typeEncounter);
+      }
     } else { this.snackbar.open('Another doctor is viewing this case', null, { duration: 4000 }); }
   }
 
@@ -123,5 +144,25 @@ export class ReferralComponent implements OnInit {
           this[`${type}Obs`] = {};
         }
       });
+  }
+
+  createEncounter = (type) => {
+    const myDate = new Date(Date.now() - 30000);
+    const providerDetails = getFromStorage('provider');
+    const providerUuid = providerDetails.uuid;
+    const json = {
+      patient: this.patientUuid,
+      encounterType: type === 'visitComplete' ? 'bd1fbfaa-f5fb-4ebd-b75c-564506fc309e' :  type === 'baseHospital' ? '4084bb49-c7ba-46c1-bfd4-0f1e38327748' : '809a1df6-8cc6-4d2c-92e7-00f7468f496e',
+      encounterProviders: [{
+        provider: providerUuid,
+        encounterRole: '73bbb069-9781-4afc-a9d1-54b6b2270e03'
+      }],
+      visit: this.visitUuid,
+      encounterDatetime: myDate
+    };
+    this.encounterService.postEncounter(json)
+    .subscribe(response => {
+      if (response) {}
+    });
   }
 }

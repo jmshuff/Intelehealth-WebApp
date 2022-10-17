@@ -14,7 +14,7 @@ export class VisitService {
 
   getVisits(deleted = false): Observable<any> {
     // tslint:disable-next-line:max-line-length
-    const url = `${this.baseURL}/visit?includeInactive=${deleted}&v=custom:(uuid,patient:(uuid,identifiers:(identifier),person:(display,gender,age,birthdate,attributes)),location:(display),encounters:(display,encounterDatetime,voided,encounterType:(display),encounterProviders),attributes)`;
+    const url = `${this.baseURL}/visit?includeInactive=${deleted}&v=custom:(uuid,patient:(uuid,identifiers:(identifier),person:(display,gender,age,birthdate,attributes)),location:(display),encounters:(display,encounterDatetime,voided,encounterType:(display,uuid),encounterProviders),attributes)`;
     return this.http.get(url);
   }
 

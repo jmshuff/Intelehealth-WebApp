@@ -51,7 +51,7 @@ export class VisitSummaryComponent implements OnInit {
       .subscribe(visitDetails => {
         const visitNote = visitDetails.encounters.filter(enc => enc.display.match('Visit Note'));
         if (!visitNote.length) {
-          this.onStartVisit();
+          // this.onStartVisit();
         }
         visitDetails.encounters.forEach(visit => {
           if (visit.display.match('Visit Note') !== null) {

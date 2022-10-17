@@ -9,7 +9,26 @@
 </ng-container> -->
 
 
-<div style="display: flex;justify-content: space-between;">
-    <div><b>Past Medical History: </b><span [innerHTML]=pastMedical></span></div>
-    <div><b>Family History: </b><span [innerHTML]=familyHistory></span></div>
+<div>
+    <h4><i class="fas fa-book-medical"></i> Past Medical History</h4>
+    <div style="display: flex;">
+        <div style="margin-right: 20px;">
+            <div><b>Medical History:</b></div>
+            <div [innerHTML]=pastMedical></div>
+        </div>
+    
+        <div>
+            <div><b>Trauma History:</b></div>
+            <div [innerHTML]=traumaHistory></div>
+        </div>
+    </div>
+
+    <br/>
+
+    <div>
+        <div><b>Ocular History:</b></div>
+        <div [innerHTML]=ocularHistory></div>
+    </div>
+    
+    <!-- <div><b>Family History: </b><span [innerHTML]=familyHistory></span></div> -->
 </div>

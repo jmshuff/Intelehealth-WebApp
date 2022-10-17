@@ -3,59 +3,50 @@
 <div>
     <div *ngIf="!coordinator">
         <div class="referral-flex">
-            <div>
-                <h5>Does this patient need a referral?</h5>
-                <mat-radio-group aria-label="Select an option" class="radio-group" [value]="referralObs?.value" [disabled]="referralObs?.value" (change)="onChangeHandler('referral', $event.value)">
-                    <mat-radio-button class="radio-button" value="No">No</mat-radio-button>
-                    <mat-radio-button class="radio-button" value="Yes to Base Hospital">Yes to Base Hospital</mat-radio-button>
-                    <mat-radio-button class="radio-button" value="Yes to Vision Center">Yes to Vision Center</mat-radio-button>
-                    <mat-radio-button class="radio-button" value="Yes to Eye Camp">Yes to Eye Camp</mat-radio-button>
+            <div style="margin-right: 10%">
+                <h5>What is the follow-up regimen for this patient?</h5>
+                <mat-radio-group aria-label="Select an option" class="radio-group" [value]="referralObs?.value"
+                    [disabled]="referralObs?.value">
+                    <mat-radio-button class="radio-button" value="Healthworker to follow up at patient’s home" (change)="onChangeHandler('healthworker', $event.value)">
+                        Healthworker to follow up at patient’s home</mat-radio-button>
+                    <mat-radio-button class="radio-button" value="Refer to base hospital" (change)="onChangeHandler('baseHospital', $event.value)">Refer to base hospital
+                    </mat-radio-button>
+                    <mat-radio-button class="radio-button"
+                        value="Close visit and continue treatment regimen in community" (change)="onChangeHandler('referral', $event.value)">Close visit and continue
+                        treatment regimen in community</mat-radio-button>
+                    <mat-radio-button class="radio-button" value="No further care required" (change)="onChangeHandler('vistComplete', $event.value)">No further care required
+                    </mat-radio-button>
                 </mat-radio-group>
             </div>
-            <div *ngIf="referralObs?.value !== 'No'">
-                <h5>Is this referral urgent?</h5>
-                <i>(Risk of developing new case of blindness if not treated within 7 days.)</i>
-                <h6>If refer:</h6>
-                <mat-radio-group aria-label="Select an option" class="radio-group" [value]="referralTimeObs?.value" [disabled]="referralTimeObs?.value" (change)="onChangeHandler('referralTime', $event.value)">
-                    <mat-radio-button class="radio-button" value="Urgent referral">Urgent referral</mat-radio-button>
-                    <mat-radio-button class="radio-button" value="Non-urgent referral">Non-urgent referral</mat-radio-button>
-                    <!-- <mat-radio-button class="radio-button" value="Refer in 15+ days">Refer in 15+ days</mat-radio-button> -->
-                </mat-radio-group>
+            <div *ngIf="referralObs?.value === 'Healthworker to follow up at patient’s home'">
+                <h5>When should the healthworker follow up?</h5>
+                <mat-form-field class="example-full-width">
+                    <input matInput type="number" aria-label="State" min="1" [(ngModel)]="referralTime" [disabled]="referralTimeObs.value"/>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" (click)="save('referralTime')" [disabled]="!referralTime">Submit</button>
             </div>
         </div>
-    
-        <ng-container *ngIf="referral">
+
+        <ng-container *ngIf="referralObs.value">
             <ul class="list-unstyled">
                 <mat-list [@moveInLeft] class="alert alert-primary">
                     <div class="doctor-value">{{referralObs.value}}</div>
-                    <i (click)="delete('referral', referralObs.uuid)" class="material-icons float-right" style="color:rgb(235, 30, 30);cursor: pointer;">delete</i>
-                </mat-list>
-            </ul>
-        </ng-container> 
-        <ng-container *ngIf="referralTime">
-            <ul class="list-unstyled">
-                <mat-list [@moveInLeft] class="alert alert-primary">
-                    <div class="doctor-value">{{referralTimeObs.value}}</div>
-                    <i (click)="delete('referralTime', referralTimeObs.uuid)" class="material-icons float-right" style="color:rgb(235, 30, 30);cursor: pointer;">delete</i>
+                    <i (click)="delete('referral', referralObs.uuid)" class="material-icons float-right"
+                        style="color:rgb(235, 30, 30);cursor: pointer;">delete</i>
                 </mat-list>
             </ul>
         </ng-container>
-        <!-- <ng-container *ngIf="referralReasonObs?.value">
+        <ng-container *ngIf="referralTimeObs.value">
             <ul class="list-unstyled">
                 <mat-list [@moveInLeft] class="alert alert-primary">
-                    <div class="doctor-value">{{referralReasonObs?.value}}</div>
-                    <i (click)="delete('referralReason', referralReasonObs.uuid)" class="material-icons float-right" style="color:rgb(235, 30, 30);cursor: pointer;">delete</i>
+                    <div class="doctor-value">On {{referralTimeObs.value | date: "dd-MMM-yyyy"}}</div>
+                    <i (click)="delete('referralTime', referralTimeObs.uuid)" class="material-icons float-right"
+                        style="color:rgb(235, 30, 30);cursor: pointer;">delete</i>
                 </mat-list>
             </ul>
-        </ng-container> -->
-        <!-- <ng-container *ngIf="referralLocationObs?.value">
-            <ul class="list-unstyled">
-                <mat-list [@moveInLeft] class="alert alert-primary">
-                    <div class="doctor-value">{{referralLocationObs?.value}}</div>
-                    <i (click)="delete('referralLocation', referralLocationObs.uuid)" class="material-icons float-right" style="color:rgb(235, 30, 30);cursor: pointer;">delete</i>
-                </mat-list>
-            </ul>
-        </ng-container> -->
+        </ng-container>
+
     </div>
     <div *ngIf="referral && coordinator">
         <ul>

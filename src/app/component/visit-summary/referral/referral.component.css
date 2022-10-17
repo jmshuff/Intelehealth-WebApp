@@ -56,5 +56,9 @@ label {
 
 .referral-flex {
     display: flex;
-    justify-content: space-around;
+    /* justify-content: space-around; */
+}
+
+.example-full-width {
+    margin-right: 10px;
 }

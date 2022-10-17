@@ -33,10 +33,10 @@ export class DiagnosisComponent implements OnInit {
   rightLensDiagnosis: any = [];
   leftPathologyDiagnosis: any = [];
   rightPathologyDiagnosis: any = [];
-  diagnosisList = [];
-  lensDiagnosisList = ['Mature cataract', 'Immature cataract', 'Clear Crystalline lens', 'PCIOL', 'Aphakia']
-  additionDiagnosisList = ['Refractive Error/Presbyopia', 'Pterygium', 'Inactive Corneal Opacity', 'Active Corneal Infection']
-  eyeDiagnosisList = ['Immature Cataract', 'Mature Cataract', 'Refractive Error', 'Pseudophakia', 'Normal Eye Exam'];
+  diagnosisList = ['Active corneal infection', 'Inactive corneal opacity', 'Epithelial Defect', 'Corneal Abrasion', 'Normal Eye Exam'];
+  // lensDiagnosisList = ['Mature cataract', 'Immature cataract', 'Clear Crystalline lens', 'PCIOL', 'Aphakia']
+  additionDiagnosisList = ['Mature cataract', 'Immature cataract', 'Pterygium', 'Subconjunctival hemorrhage', 'Conjunctivitis', 'Corneal laceration', 'Limbal ischemia', 'Keratoconus', 'Refractive error', 'Presbyopia']
+  // eyeDiagnosisList = ['Immature Cataract', 'Mature Cataract', 'Refractive Error', 'Pseudophakia', 'Normal Eye Exam'];
   // conceptDiagnosis = '537bb20d-d09d-4f88-930b-cc45c7d662df';
   // Doctor 1
   conceptLeftLensEyeDiagnosis: String = '1796244d-e936-4ab8-ac8a-c9bcfa476570';

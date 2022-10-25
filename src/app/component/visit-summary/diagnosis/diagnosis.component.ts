@@ -79,27 +79,27 @@ export class DiagnosisComponent implements OnInit {
     {concept: this.conceptadditionalPathologyRight, name: 'rightPathologyDiagnosis'}
   ];
 
-  diagnosisConceptReview1 = [
-    {concept: this.conceptLeftLensEyeDiagnosisReview1, name: 'leftLensDiagnosis'},
-    {concept: this.conceptRightLensEyeDiagnosisReview1 , name: 'rightLensDiagnosis'},
-    {concept: this.conceptadditionalPathologyLeftReview1, name: 'leftPathologyDiagnosis'},
-    {concept: this.conceptadditionalPathologyRightReview1, name: 'rightPathologyDiagnosis'}
-  ];
+  // diagnosisConceptReview1 = [
+  //   {concept: this.conceptLeftLensEyeDiagnosisReview1, name: 'leftLensDiagnosis'},
+  //   {concept: this.conceptRightLensEyeDiagnosisReview1 , name: 'rightLensDiagnosis'},
+  //   {concept: this.conceptadditionalPathologyLeftReview1, name: 'leftPathologyDiagnosis'},
+  //   {concept: this.conceptadditionalPathologyRightReview1, name: 'rightPathologyDiagnosis'}
+  // ];
 
-  diagnosisConceptReview2 = [
-    {concept: this.conceptLeftLensEyeDiagnosisReview2, name: 'leftLensDiagnosis'},
-    {concept: this.conceptRightLensEyeDiagnosisReview2 , name: 'rightLensDiagnosis'},
-    {concept: this.conceptadditionalPathologyLeftReview2, name: 'leftPathologyDiagnosis'},
-    {concept: this.conceptadditionalPathologyRightReview2, name: 'rightPathologyDiagnosis'}
-  ];
+  // diagnosisConceptReview2 = [
+  //   {concept: this.conceptLeftLensEyeDiagnosisReview2, name: 'leftLensDiagnosis'},
+  //   {concept: this.conceptRightLensEyeDiagnosisReview2 , name: 'rightLensDiagnosis'},
+  //   {concept: this.conceptadditionalPathologyLeftReview2, name: 'leftPathologyDiagnosis'},
+  //   {concept: this.conceptadditionalPathologyRightReview2, name: 'rightPathologyDiagnosis'}
+  // ];
 
   rightConcept: string;
 
   diagnosisForm = new UntypedFormGroup({
     lensLeftEye: new UntypedFormControl(''),
     lensRightEye: new UntypedFormControl(''),
-    pathologyLeftEye: new UntypedFormControl(''),
-    pathologyRightEye: new UntypedFormControl(''),
+    // pathologyLeftEye: new UntypedFormControl(''),
+    // pathologyRightEye: new UntypedFormControl(''),
     leftEyeOtherValue: new UntypedFormControl(''),
     rightEyeOtherValue: new UntypedFormControl('')
   });
@@ -115,7 +115,6 @@ export class DiagnosisComponent implements OnInit {
     this.patientId = this.route.snapshot.params['patient_id'] || this.data.patientId;
     const reviewVisit = checkReview(this.visitUuid);
     this.rightConcept = reviewVisit?.reviewType === 1 ? 'diagnosisConceptReview1' : reviewVisit?.reviewType === 2 ? 'diagnosisConceptReview2' : 'diagnosisConcept';
-    // console.log(this.rightConcept)
     this[this.rightConcept].forEach(each => {
       this.diagnosisService.getObs(this.patientId, each.concept)
       .subscribe(response => {
@@ -158,9 +157,9 @@ export class DiagnosisComponent implements OnInit {
     if (event.key === 'Enter' || event.keyCode === 13) {
       const value = this.diagnosisForm.value;
       if (side === 'left') {
-        this.diagnosisForm.controls.pathologyLeftEye.setValue(value.leftEyeOtherValue);
+        this.diagnosisForm.controls.lensLeftEye.setValue(value.leftEyeOtherValue);
       } else {
-        this.diagnosisForm.controls.pathologyRightEye.setValue(value.rightEyeOtherValue);
+        this.diagnosisForm.controls.lensRightEye.setValue(value.rightEyeOtherValue);
       }
       setTimeout(() => this.onSubmit(side, true), 200);
     }
@@ -168,9 +167,9 @@ export class DiagnosisComponent implements OnInit {
 
   onClick = (value, side) => {
     if (side === 'left') {
-      this.diagnosisForm.controls.pathologyLeftEye.setValue(value);
+      this.diagnosisForm.controls.lensLeftEye.setValue(value);
     } else if (side === 'right') {
-      this.diagnosisForm.controls.pathologyRightEye.setValue(value);
+      this.diagnosisForm.controls.lensRightEye.setValue(value);
     }
     setTimeout(() => this.onSubmit(side, true), 200);
   }
@@ -178,7 +177,7 @@ export class DiagnosisComponent implements OnInit {
   onClickHandler = (side, value, type) => {
     if (side === 'left') {
       if (type) {
-        this.diagnosisForm.controls.pathologyLeftEye.setValue(value);
+        this.diagnosisForm.controls.lensLeftEye.setValue(value);
       } else {
         this.diagnosisForm.controls.lensLeftEye.setValue(value);
       }
@@ -192,24 +191,31 @@ export class DiagnosisComponent implements OnInit {
     const providerDetails = getFromStorage('provider');
     if (providerDetails && providerDetails.uuid === getEncounterProviderUUID() || this.showDetails) {
       this.encounterUuid = getEncounterUUID();
-      let json;
-      if (type) {
-        json = {
-          concept: side === 'right' ? this.showDetails ? this.conceptCoordinatorRightLensEyeDiagnosis : this[this.rightConcept][3].concept : this.showDetails ? this.conceptCoordinatorLeftLensEyeDiagnosis : this[this.rightConcept][2].concept,
-          value: side === 'right' ? value.pathologyRightEye : value.pathologyLeftEye,
-          person: this.patientId,
-          obsDatetime: date,
-          encounter: this.encounterUuid
-        }
-      } else {
-        json = {
-          concept: side === 'right' ? this.showDetails ? this.conceptCoordinatorRightLensEyeDiagnosis : this[this.rightConcept][1].concept : this.showDetails ? this.conceptCoordinatorLeftLensEyeDiagnosis : this[this.rightConcept][0].concept,
-          person: this.patientId,
-          obsDatetime: date,
-          value: side === 'right' ? value.lensRightEye : value.lensLeftEye,
-          encounter: this.encounterUuid
-        };
+      // let json;
+      let json = {
+        concept: side === 'right' ? this.showDetails ? this.conceptCoordinatorRightLensEyeDiagnosis : this[this.rightConcept][1].concept : this.showDetails ? this.conceptCoordinatorLeftLensEyeDiagnosis : this[this.rightConcept][0].concept,
+        value: side === 'right' ? value.lensRightEye : value.lensLeftEye,
+        person: this.patientId,
+        obsDatetime: date,
+        encounter: this.encounterUuid
       }
+      // if (type) {
+      //   json = {
+      //     concept: side === 'right' ? this.showDetails ? this.conceptCoordinatorRightLensEyeDiagnosis : this[this.rightConcept][3].concept : this.showDetails ? this.conceptCoordinatorLeftLensEyeDiagnosis : this[this.rightConcept][2].concept,
+      //     value: side === 'right' ? value.pathologyRightEye : value.pathologyLeftEye,
+      //     person: this.patientId,
+      //     obsDatetime: date,
+      //     encounter: this.encounterUuid
+      //   }
+      // } else {
+      //   json = {
+      //     concept: side === 'right' ? this.showDetails ? this.conceptCoordinatorRightLensEyeDiagnosis : this[this.rightConcept][1].concept : this.showDetails ? this.conceptCoordinatorLeftLensEyeDiagnosis : this[this.rightConcept][0].concept,
+      //     person: this.patientId,
+      //     obsDatetime: date,
+      //     value: side === 'right' ? value.lensRightEye : value.lensLeftEye,
+      //     encounter: this.encounterUuid
+      //   };
+      // }
       this.diagnosisService.postObs(json)
         .subscribe(resp => {
           this.diagnosisForm.reset();
@@ -233,30 +239,33 @@ export class DiagnosisComponent implements OnInit {
             });
             this.imageService.saveDiagnosis(payload).subscribe(resposne => {console.log(resposne)});
           }
-          this.diagnosisList = [];
-          if (type) {
-            this[side === 'right' ? 'rightPathologyDiagnosis' : 'leftPathologyDiagnosis'].push({ uuid: resp.uuid, value: json.value });
-          } else {
-            this[side === 'right' ? 'rightLensDiagnosis' : 'leftLensDiagnosis'].push({ uuid: resp.uuid, value: json.value });
-          }
+          // this.diagnosisList = [];
+          this[side === 'right' ? 'rightLensDiagnosis' : 'leftLensDiagnosis'].push({ uuid: resp.uuid, value: json.value });
+          // if (type) {
+          //   this[side === 'right' ? 'rightPathologyDiagnosis' : 'leftPathologyDiagnosis'].push({ uuid: resp.uuid, value: json.value });
+          // } else {
+          //   this[side === 'right' ? 'rightLensDiagnosis' : 'leftLensDiagnosis'].push({ uuid: resp.uuid, value: json.value });
+          // }
         });
     } else { this.snackbar.open('Another doctor is viewing this case', null, { duration: 4000 }); }
   }
 
   delete(side, i, type =  false) {
     let uuid: String;
-    if (type) {
-      uuid = this[side === 'right' ? 'rightPathologyDiagnosis' : 'leftPathologyDiagnosis'][i].uuid;
-    } else {
-      uuid = this[side === 'right' ? 'rightLensDiagnosis' : 'leftLensDiagnosis'][i].uuid;
-    }
+    uuid = this[side === 'right' ? 'rightLensDiagnosis' : 'leftLensDiagnosis'][i].uuid;
+    // if (type) {
+    //   uuid = this[side === 'right' ? 'rightPathologyDiagnosis' : 'leftPathologyDiagnosis'][i].uuid;
+    // } else {
+    //   uuid = this[side === 'right' ? 'rightLensDiagnosis' : 'leftLensDiagnosis'][i].uuid;
+    // }
     this.diagnosisService.deleteObs(uuid)
       .subscribe(res => {
-        if (type) {
-          this[side === 'right' ? 'rightPathologyDiagnosis' : 'leftPathologyDiagnosis'].splice(i, 1);
-        } else {
-          this[side === 'right' ? 'rightLensDiagnosis' : 'leftLensDiagnosis'].splice(i, 1);
-        }
+        this[side === 'right' ? 'rightLensDiagnosis' : 'leftLensDiagnosis'].splice(i, 1);
+        // if (type) {
+        //   this[side === 'right' ? 'rightPathologyDiagnosis' : 'leftPathologyDiagnosis'].splice(i, 1);
+        // } else {
+        //   this[side === 'right' ? 'rightLensDiagnosis' : 'leftLensDiagnosis'].splice(i, 1);
+        // }
       });
   }
 }

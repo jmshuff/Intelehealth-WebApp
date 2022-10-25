@@ -21,9 +21,9 @@
             <div *ngIf="referralObs?.value === 'Healthworker to follow up at patient’s home'">
                 <h5>When should the healthworker follow up?</h5>
                 <mat-form-field class="example-full-width">
-                    <input matInput type="number" aria-label="State" min="1" [(ngModel)]="referralTime" [disabled]="referralTimeObs.value"/>
+                    <input matInput type="number" placeholder="days" aria-label="State" min="1" [(ngModel)]="referralTime" [disabled]="referralTimeObs.value"/>
                 </mat-form-field>
-
+                <!-- <span> days</span> -->
                 <button mat-raised-button color="primary" (click)="save('referralTime')" [disabled]="!referralTime">Submit</button>
             </div>
         </div>

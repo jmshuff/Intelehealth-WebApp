@@ -52,45 +52,56 @@ export class VisitSummaryComponent implements OnInit {
         const visitNote = visitDetails.encounters.filter(enc => enc.display.match('Visit Note'));
         if (!visitNote.length) {
           // this.onStartVisit();
-        }
-        visitDetails.encounters.forEach(visit => {
-          if (visit.display.match('Visit Note') !== null) {
-            this.visitNotePresent = true;
-            this.show = true;
-            const reviewVisit = checkReview(this.visitUuid);
-            if (reviewVisit.reviewType) {
-              this.reviewVisit1 = reviewVisit.review1.length ? true : false;
-              this.reviewVisit2 = reviewVisit.review2.length ? true : false;
-              this.show = reviewVisit.show ? true : false;
-              if (this.reviewVisit1) {
-                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
-                if (rightEnco.length) {
-                  saveToStorage('visitNoteProvider', rightEnco[0]);
-                }
-              } else {
-                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
-                if (rightEnco.length) {
-                  saveToStorage('visitNoteProvider', rightEnco[0]);
-                }
-              }
-            } else {
-              saveToStorage('visitNoteProvider', visit);
+        } else {
+          this.visitNotePresent = true;
+          this.show = true;
+          saveToStorage('visitNoteProvider', visitNote[0]);
+          visitNote[0].encounterProviders[0].provider.attributes.forEach(element => {
+            if (element.attributeType.display === 'textOfSign') {
+              this.text = element.value;
+            } if (element.attributeType.display === 'fontOfSign') {
+              this.font = element.value;
             }
-          }
-          if (visit.display.match('ADULTINITIAL') || visit.display.match('Vitals')) {
-            saveToStorage('healthWorkerDetails', visit);
-          }
-          if (visit.display.match('Visit Complete') !== null) {
-            this.visitCompletePresent = true;
-            visit.encounterProviders[0].provider.attributes.forEach(element => {
-              if (element.attributeType.display === 'textOfSign') {
-                this.text = element.value;
-              } if (element.attributeType.display === 'fontOfSign') {
-                this.font = element.value;
-              }
-            });
-          }
-        });
+          });
+        }
+        // visitDetails.encounters.forEach(visit => {
+        //   if (visit.display.match('Visit Note') !== null) {
+        //     this.visitNotePresent = true;
+        //     this.show = true;
+        //     const reviewVisit = checkReview(this.visitUuid);
+        //     if (reviewVisit.reviewType) {
+        //       this.reviewVisit1 = reviewVisit.review1.length ? true : false;
+        //       this.reviewVisit2 = reviewVisit.review2.length ? true : false;
+        //       this.show = reviewVisit.show ? true : false;
+        //       if (this.reviewVisit1) {
+        //         const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
+        //         if (rightEnco.length) {
+        //           saveToStorage('visitNoteProvider', rightEnco[0]);
+        //         }
+        //       } else {
+        //         const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
+        //         if (rightEnco.length) {
+        //           saveToStorage('visitNoteProvider', rightEnco[0]);
+        //         }
+        //       }
+        //     } else {
+        //       saveToStorage('visitNoteProvider', visit);
+        //     }
+        //   }
+        //   if (visit.display.match('ADULTINITIAL') || visit.display.match('Vitals')) {
+        //     saveToStorage('healthWorkerDetails', visit);
+        //   }
+        //   if (visit.display.match('Visit Complete') !== null) {
+        //     this.visitCompletePresent = true;
+        //     visit.encounterProviders[0].provider.attributes.forEach(element => {
+        //       if (element.attributeType.display === 'textOfSign') {
+        //         this.text = element.value;
+        //       } if (element.attributeType.display === 'fontOfSign') {
+        //         this.font = element.value;
+        //       }
+        //     });
+        //   }
+        // });
       });
     this.nextVisitButton(this.coordinator ? this.allReferralVisit : this.allVisit);
   }
@@ -162,48 +173,54 @@ export class VisitSummaryComponent implements OnInit {
     // const userDetails = getFromStorage('user');
     const providerDetails = getFromStorage('provider');
     // if (userDetails && providerDetails) {
-    this.doctorDetails = providerDetails;
-    this.getDoctorValue();
-    const providerUuid = providerDetails.uuid;
+    // this.doctorDetails = providerDetails;
+    // this.getDoctorValue();
+    // const providerUuid = providerDetails.uuid;
     // if (providerUuid === getEncounterProviderUUID()) {
-    this.service.signRequest(providerUuid)
-      .subscribe(res => {
-        if (res.results.length) {
-          res.results.forEach(element => {
-            if (element.attributeType.display === 'textOfSign') {
-              this.text = element.value;
-            } if (element.attributeType.display === 'fontOfSign') {
-              this.font = element.value;
-            }
-          });
-          const json = {
-            patient: this.patientUuid,
-            encounterType: 'bd1fbfaa-f5fb-4ebd-b75c-564506fc309e',
-            encounterProviders: [{
-              provider: providerUuid,
-              encounterRole: '73bbb069-9781-4afc-a9d1-54b6b2270e03'
-            }],
-            visit: this.visitUuid,
-            encounterDatetime: myDate,
-            obs: [{
-              concept: '7a9cb7bc-9ab9-4ff0-ae82-7a1bd2cca93e',
-              value: JSON.stringify(this.doctorValue)
-            }],
-          };
-          this.service.postEncounter(json)
-            .subscribe(post => {
-              this.visitCompletePresent = true;
-              this.snackbar.open('Visit Complete', null, { duration: 4000 });
-              if (this.next && !this.noVisit) {
-                this.router.navigateByUrl(`/visitSummary/${this.next.patientId}/${this.next.visitId}`);
-              }
-            });
-        } else {
-          if (window.confirm('Your signature is not setup! If you click "Ok" you would be redirected. Cancel will load this website ')) {
-            this.router.navigateByUrl('/myAccount');
-          }
-        }
-      });
+    // this.service.signRequest(providerUuid)
+    //   .subscribe(res => {
+    //     if (res.results.length) {
+    //       res.results.forEach(element => {
+    //         if (element.attributeType.display === 'textOfSign') {
+    //           this.text = element.value;
+    //         } if (element.attributeType.display === 'fontOfSign') {
+    //           this.font = element.value;
+    //         }
+    //       });
+    //       if (this.next && !this.noVisit) {
+    //         this.router.navigateByUrl(`/visitSummary/${this.next.patientId}/${this.next.visitId}`);
+    //       }
+    //       const json = {
+    //         patient: this.patientUuid,
+    //         encounterType: 'bd1fbfaa-f5fb-4ebd-b75c-564506fc309e',
+    //         encounterProviders: [{
+    //           provider: providerUuid,
+    //           encounterRole: '73bbb069-9781-4afc-a9d1-54b6b2270e03'
+    //         }],
+    //         visit: this.visitUuid,
+    //         encounterDatetime: myDate,
+    //         obs: [{
+    //           concept: '7a9cb7bc-9ab9-4ff0-ae82-7a1bd2cca93e',
+    //           value: JSON.stringify(this.doctorValue)
+    //         }],
+    //       };
+    //       this.service.postEncounter(json)
+    //         .subscribe(post => {
+    //           this.visitCompletePresent = true;
+    //           this.snackbar.open('Visit Complete', null, { duration: 4000 });
+    //           if (this.next && !this.noVisit) {
+    //             this.router.navigateByUrl(`/visitSummary/${this.next.patientId}/${this.next.visitId}`);
+    //           }
+    //         });
+    //     } else {
+    //       if (window.confirm('Your signature is not setup! If you click "Ok" you would be redirected. Cancel will load this website ')) {
+    //         this.router.navigateByUrl('/myAccount');
+    //       }
+    //     }
+    //   });
+    if (this.next && !this.noVisit) {
+      this.router.navigateByUrl(`/visitSummary/${this.next.patientId}/${this.next.visitId}`);
+    }
     // } else {this.snackbar.open('Another doctor is viewing this case', null, {duration: 4000}); }
     // } else {this.authService.logout(); }
   }

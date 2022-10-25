@@ -215,24 +215,24 @@ export class DiagnosisComponent implements OnInit {
           this.diagnosisForm.reset();
           this.showLeftEyeOtherInput = false;
           this.showRightEyeOtherInput = false;
-          const allImages = getFromStorage('physicalImages');
-          const filteredImage = allImages?.filter(image => image.type === side);
-          if (filteredImage?.length) {
-            const payload = {
-              id: uuidv4(),
-              diagnosis: !type ? json.value : '',
-              additional_pathology: type ? json.value : '',
-              created_by: providerDetails.person.display,
-              images: []
-            };
-            filteredImage.forEach(im => {
-              payload.images.push({
-                ...im,
-                diagnosis_id: payload.id
-              });
-            });
-            this.imageService.saveDiagnosis(payload).subscribe(resposne => {console.log(resposne)});
-          }
+          // const allImages = getFromStorage('physicalImages');
+          // const filteredImage = allImages?.filter(image => image.type === side);
+          // if (filteredImage?.length) {
+          //   const payload = {
+          //     id: uuidv4(),
+          //     diagnosis: !type ? json.value : '',
+          //     additional_pathology: type ? json.value : '',
+          //     created_by: providerDetails.person.display,
+          //     images: []
+          //   };
+          //   filteredImage.forEach(im => {
+          //     payload.images.push({
+          //       ...im,
+          //       diagnosis_id: payload.id
+          //     });
+          //   });
+          //   this.imageService.saveDiagnosis(payload).subscribe(resposne => {console.log(resposne)});
+          // }
           this.diagnosisList = [];
           if (type) {
             this[side === 'right' ? 'rightPathologyDiagnosis' : 'leftPathologyDiagnosis'].push({ uuid: resp.uuid, value: json.value });

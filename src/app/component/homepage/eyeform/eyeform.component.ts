@@ -4,6 +4,8 @@ import { Component, OnInit } from '@angular/core';
 import { EncounterService } from 'src/app/services/encounter.service';
 import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { v4 as uuidv4 } from 'uuid';
+import { ImagesService } from 'src/app/services/images.service';
 declare var getFromStorage: any;
 
 @Component({
@@ -63,6 +65,7 @@ export class EyeformComponent implements OnInit {
     ophthalmologist: new UntypedFormControl('')
   });
   constructor(
+    private imageService: ImagesService,
     private visitService: VisitService,
     private encounterService: EncounterService,
     private diagnosisService: DiagnosisService,
@@ -298,6 +301,7 @@ export class EyeformComponent implements OnInit {
           this.snackbar.open('Complete', null, {duration: 4000});
         });
       }
+      this.submitDiagnosis(value);
     } else {
       this.snackbar.open('Patient Not Selected', null, { duration: 4000 });
     }
@@ -332,5 +336,44 @@ export class EyeformComponent implements OnInit {
       ophthalmologist: data.ophthalmologist
     };
     return formInfo;
+  }
+
+  submitDiagnosis = (value) => {
+    try {
+      this.imageService.fetchPhyImages(this.selectedPatient?.patient_uuid, this.selectedPatient.visit_uuid)
+      .subscribe(response => {
+        let allImages = response.data;
+        const leftFilteredImage = allImages?.filter(image => image.type === 'left');
+        if (leftFilteredImage) {
+          let payload = this.addValueToDiagnosis(leftFilteredImage, value, 'left')
+          this.imageService.saveDiagnosis(payload).subscribe(resposne => {console.log(resposne)});
+        }
+        const rightFilteredImage = allImages?.filter(image => image.type === 'right');
+        if (rightFilteredImage) {
+          let payload = this.addValueToDiagnosis(rightFilteredImage, value, 'right');
+          this.imageService.saveDiagnosis(payload).subscribe(resposne => {console.log(resposne)});
+        }
+      })
+    } catch (err) {
+      console.log('dignosis submit exception: ', err);
+    }
+  }
+
+  addValueToDiagnosis = (imageData, value, side) => {
+    const providerDetails = getFromStorage('provider');
+    const payload = {
+      id: uuidv4(),
+      additional_pathology: side === 'left' ? value.diagnosis.left.join(',') : value.diagnosis.right.join(','),
+      diagnosis: side === 'left' ? value.lens.left: value.lens.right,
+      created_by: providerDetails.person.display,
+      images: []
+    };
+    imageData.forEach(im => {
+      payload.images.push({
+        ...im,
+        diagnosis_id: payload.id
+      });
+    });
+    return payload;
   }
 }

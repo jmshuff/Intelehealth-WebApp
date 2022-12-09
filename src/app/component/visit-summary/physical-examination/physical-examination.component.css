@@ -18,3 +18,16 @@
 .radio-button {
   margin: 5px;
 }
+
+.physical-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.physical-right {
+  width: 48%;
+}
+
+.physical-left {
+  width: 48%;
+}

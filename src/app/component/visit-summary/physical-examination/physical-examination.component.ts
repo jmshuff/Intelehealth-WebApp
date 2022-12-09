@@ -29,13 +29,13 @@ export class PhysicalExaminationComponent implements OnInit {
         this.physicalExamPresent = true;
         saveToStorage('physicalImages', response.data);
         response.data.forEach(image => {
-          const data = {
-            image: image.image_path,
-            id: image.id,
-            efficient: image.efficient,
-            type: image.type
-          };
-          this.images.push(data);
+            const data = {
+              image: image.image_path,
+              id: image.id,
+              efficient: image.efficient,
+              type: image.type
+            };
+            this.images.push(data);
         });
       } else {
         saveToStorage('physicalImages', []);

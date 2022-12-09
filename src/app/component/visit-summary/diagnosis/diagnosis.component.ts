@@ -134,7 +134,7 @@ export class DiagnosisComponent implements OnInit {
     const list = ['Inactive Corneal Opacity', 'Pterygium', 'Conjunctivitis',
           'Subconjunctival hemorrhage', 'Presbyopia',
           'Active Corneal Infection', 'Posterior Segment Screening',
-          'Cannot be assessed'];
+          'Posterior Capsule Opacification (PCO)', 'Cannot be assessed'];
     this.diagnosisList = list.filter(eye => eye.toLowerCase().includes(searchedTerm));
   }
 

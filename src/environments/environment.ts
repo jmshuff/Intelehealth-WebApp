@@ -4,10 +4,10 @@
 
 export const environment = {
   production: false,
-  baseURL: 'https://aroma.visilant.org/openmrs/ws/rest/v1',
-  baseURLCoreApp : 'https://aroma.visilant.org/openmrs/coreapps/diagnoses',
-  baseURLLegacy: 'https://aroma.visilant.org/openmrs',
-  mindmapURL: 'http://aroma.visilant.org:3004/api',
+  baseURL: 'https://tvl.visilant.org/openmrs/ws/rest/v1',
+  baseURLCoreApp : 'https://tvl.visilant.org/openmrs/coreapps/diagnoses',
+  baseURLLegacy: 'https://tvl.visilant.org/openmrs',
+  mindmapURL: 'http://tvl.visilant.org:3004/api',
   azureImage: 'https://testing.visilant.org:3006/api/v1'
 };
 

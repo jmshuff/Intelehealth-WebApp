@@ -112,7 +112,7 @@
             color="primary"
             [disabled]="visitCompletePresent && !reviewVisit1 && !reviewVisit2"
           >
-            Submit and Next
+            {{noVisit ? 'Submit' : 'Submit and Next'}}
           </button>
         </div>
       </div>

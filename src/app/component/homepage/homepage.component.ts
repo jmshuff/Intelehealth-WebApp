@@ -129,10 +129,10 @@ export class HomepageComponent implements OnInit {
                 completeVisitLength += 1;
               } else {
                 const review1: any = this.processReview(active.encounters[1]);
-                const newValues = this.assignValueToProperty(active, review1 ? 'Visit Note' : 'ADULTINITIAL', review1);
+                const newValues = this.assignValueToProperty(active, review1 ? 'Visit Complete' : 'ADULTINITIAL', review1);
                 if (review1) {
                   this.review1.push({ ...newValues, seen: true });
-                  this.progressVisit.push(newValues);
+                  this.completedVisit.push(newValues);
                   visitNoteLength += 1;
                 } else {
                   const visitComplete = active.encounters.filter(enc => enc.display.match('Visit Complete'));
@@ -175,7 +175,7 @@ export class HomepageComponent implements OnInit {
             } else if (value.match('Review 1')) {
               const sameProvider: any = this.processReview(active.encounters[0]);
               if (sameProvider) {
-                const review1Values = this.assignValueToProperty(active, 'Visit Note', sameProvider);
+                const review1Values = this.assignValueToProperty(active, 'Visit Complete', sameProvider);
                 this.review1.push({ ...review1Values, seen: true });
                 this.completedVisit.push(review1Values);
                 completeVisitLength += 1;
@@ -193,13 +193,13 @@ export class HomepageComponent implements OnInit {
                     } else {
                       const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
                       this.waitingVisit.push(waitingListValues);
-                      this.review1.push({ ...waitingListValues });
+                      this.review2.push({ ...waitingListValues });
                       length += 1;
                     }
                   } else {
                     const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
                     this.waitingVisit.push(waitingListValues);
-                    this.review1.push({ ...waitingListValues });
+                    this.review2.push({ ...waitingListValues });
                     length += 1;
                   }
                 } else if (visitNote.length) {
@@ -212,7 +212,7 @@ export class HomepageComponent implements OnInit {
                   } else {
                     const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
                     this.waitingVisit.push(waitingListValues);
-                    this.review1.push({ ...waitingListValues });
+                    this.review2.push({ ...waitingListValues });
                     length += 1;
                   }
                 } else {

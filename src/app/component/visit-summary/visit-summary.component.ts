@@ -49,48 +49,80 @@ export class VisitSummaryComponent implements OnInit {
     }, 1000);
     this.visitService.fetchVisitDetails(this.visitUuid)
       .subscribe(visitDetails => {
-        const visitNote = visitDetails.encounters.filter(enc => enc.display.match('Visit Note'));
-        if (!visitNote.length) {
-          this.onStartVisit();
-        }
-        visitDetails.encounters.forEach(visit => {
-          if (visit.display.match('Visit Note') !== null) {
-            this.visitNotePresent = true;
-            this.show = true;
+        try {
+          visitDetails.encounters.forEach(encounter => {
             const reviewVisit = checkReview(this.visitUuid);
             if (reviewVisit.reviewType) {
               this.reviewVisit1 = reviewVisit.review1.length ? true : false;
               this.reviewVisit2 = reviewVisit.review2.length ? true : false;
               this.show = reviewVisit.show ? true : false;
+            }
+            if (encounter.display.match('Review 2') !== null) {
+              this.show = true;
+              saveToStorage('visitNoteProvider', encounter);
+              throw 'BreakError';
+            } else if (encounter.display.match('Review 1') !== null) {
               if (this.reviewVisit1) {
                 const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
                 if (rightEnco.length) {
+                  this.show = true;
                   saveToStorage('visitNoteProvider', rightEnco[0]);
+                } else {
+                  this.onStartVisit();
                 }
               } else {
                 const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
                 if (rightEnco.length) {
+                  this.show = true;
                   saveToStorage('visitNoteProvider', rightEnco[0]);
+                } else {
+                  this.onStartVisit();
                 }
               }
-            } else {
-              saveToStorage('visitNoteProvider', visit);
-            }
-          }
-          if (visit.display.match('ADULTINITIAL') || visit.display.match('Vitals')) {
-            saveToStorage('healthWorkerDetails', visit);
-          }
-          if (visit.display.match('Visit Complete') !== null) {
-            this.visitCompletePresent = true;
-            visit.encounterProviders[0].provider.attributes.forEach(element => {
-              if (element.attributeType.display === 'textOfSign') {
-                this.text = element.value;
-              } if (element.attributeType.display === 'fontOfSign') {
-                this.font = element.value;
+              throw 'BreakError';
+            } else if (encounter.display.match('Visit Note') !== null) {
+              this.visitNotePresent = true;
+              this.show = true;
+              saveToStorage('visitNoteProvider', encounter);
+              if (this.reviewVisit1) {
+                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
+                if (rightEnco.length) {
+                  this.show = true;
+                  saveToStorage('visitNoteProvider', rightEnco[0]);
+                } else {
+                  this.onStartVisit();
+                }
+              } else {
+                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
+                if (rightEnco.length) {
+                  this.show = true;
+                  saveToStorage('visitNoteProvider', rightEnco[0]);
+                } else {
+                  this.onStartVisit();
+                }
               }
-            });
+              throw 'BreakError';
+            } else if (encounter.display.match('ADULTINITIAL') || encounter.display.match('Vitals')) {
+              saveToStorage('healthWorkerDetails', encounter);
+              this.onStartVisit();
+              throw 'BreakError';
+            } else if (encounter.display.match('Visit Complete') !== null) {
+              this.visitCompletePresent = true;
+              encounter.encounterProviders[0].provider.attributes.forEach(element => {
+                if (element.attributeType.display === 'textOfSign') {
+                  this.text = element.value;
+                } if (element.attributeType.display === 'fontOfSign') {
+                  this.font = element.value;
+                }
+              });
+              throw 'BreakError';
+            }
+          });
+        } catch (err) {
+          if (err !== 'BreakError') {
+            console.log(err)
           }
-        });
+        }
       });
     this.nextVisitButton(this.coordinator ? this.allReferralVisit : this.allVisit);
   }
@@ -98,11 +130,13 @@ export class VisitSummaryComponent implements OnInit {
   nextVisitButton(visitData) {
     if (visitData.length) {
       const currentVisit = visitData.findIndex((visit: any) => this.visitUuid === visit.visitId);
-      if (currentVisit !== -1) {
+      if (currentVisit !== -1 && currentVisit < visitData.length - 1) {
         this.next = {
           patientId: visitData[currentVisit + 1]['patientId'],
           visitId: visitData[currentVisit + 1]['visitId']
         };
+      } else {
+        this.noVisit = true;
       }
     } else {
       this.noVisit = true;
@@ -190,14 +224,22 @@ export class VisitSummaryComponent implements OnInit {
               value: JSON.stringify(this.doctorValue)
             }],
           };
-          this.service.postEncounter(json)
-            .subscribe(post => {
-              this.visitCompletePresent = true;
-              this.snackbar.open('Visit Complete', null, { duration: 4000 });
-              if (this.next && !this.noVisit) {
-                this.router.navigateByUrl(`/visitSummary/${this.next.patientId}/${this.next.visitId}`);
-              }
-            });
+          if (!this.reviewVisit1 && !this.reviewVisit2) {
+            this.service.postEncounter(json)
+              .subscribe(post => {
+                this.visitCompletePresent = true;
+                this.snackbar.open('Visit Complete', null, { duration: 4000 });
+                if (this.next && !this.noVisit) {
+                  this.router.navigateByUrl(`/visitSummary/${this.next.patientId}/${this.next.visitId}`);
+                }
+              });
+          } else {
+            this.visitCompletePresent = true;
+            this.snackbar.open('Visit Complete', null, { duration: 4000 });
+            if (this.next && !this.noVisit) {
+              this.router.navigateByUrl(`/visitSummary/${this.next.patientId}/${this.next.visitId}`);
+            }
+          }
         } else {
           if (window.confirm('Your signature is not setup! If you click "Ok" you would be redirected. Cancel will load this website ')) {
             this.router.navigateByUrl('/myAccount');

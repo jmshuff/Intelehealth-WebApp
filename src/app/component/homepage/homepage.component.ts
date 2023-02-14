@@ -104,9 +104,9 @@ export class HomepageComponent implements OnInit {
       .subscribe(response => {
         const visits = response.results;
         let length = 0, flagLength = 0, visitNoteLength = 0, completeVisitLength = 0, review = 0;
-        visits.forEach(async active => {
+        visits.forEach(async active => {          
           if (active.encounters.length > 0) {
-            let value = active.encounters[0].display;
+            let value = active.encounters.filter(enc => !enc.voided)[0].display; //active.encounters[0].display;
             if (value.match('Eye Camp')) {
               value = active.encounters[1].display;
             }
@@ -122,7 +122,7 @@ export class HomepageComponent implements OnInit {
               length += 1;
             } else if (value.match('Review 2')) {
               const sameProvider: any = this.processReview(active.encounters[0]);
-              const values = this.assignValueToProperty(active, sameProvider ? 'Visit Note' : 'ADULTINITIAL', sameProvider);
+              const values = this.assignValueToProperty(active, sameProvider ? 'Visit Complete' : 'ADULTINITIAL', sameProvider);
               if (sameProvider) {
                 this.review2.push({ ...values, seen: true });
                 this.completedVisit.push(values);

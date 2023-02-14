@@ -29,6 +29,7 @@ export class VisitSummaryComponent implements OnInit {
   next: any;
   noVisit: Boolean = false;
   coordinator: Boolean = getFromStorage('coordinator') || false;
+  visitInfo: any = {};
 
   constructor(private service: EncounterService,
     private visitService: VisitService,
@@ -50,6 +51,7 @@ export class VisitSummaryComponent implements OnInit {
     this.visitService.fetchVisitDetails(this.visitUuid)
       .subscribe(visitDetails => {
         try {
+          this.visitInfo = visitDetails;
           visitDetails.encounters.forEach(encounter => {
             const reviewVisit = checkReview(this.visitUuid);
             if (reviewVisit.reviewType) {
@@ -62,6 +64,28 @@ export class VisitSummaryComponent implements OnInit {
               saveToStorage('visitNoteProvider', encounter);
               throw 'BreakError';
             } else if (encounter.display.match('Review 1') !== null) {
+              if (this.reviewVisit1) {
+                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
+                if (rightEnco.length) {
+                  this.show = true;
+                  saveToStorage('visitNoteProvider', rightEnco[0]);
+                } else {
+                  this.onStartVisit();
+                }
+              } else {
+                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
+                if (rightEnco.length) {
+                  this.show = true;
+                  saveToStorage('visitNoteProvider', rightEnco[0]);
+                } else {
+                  this.onStartVisit();
+                }
+              }
+              throw 'BreakError';
+            } else if (encounter.display.match('Visit Complete') !== null) {
+              this.visitNotePresent = true;
+              this.show = true;
+              saveToStorage('visitNoteProvider', encounter);
               if (this.reviewVisit1) {
                 const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
                 if (rightEnco.length) {
@@ -224,7 +248,8 @@ export class VisitSummaryComponent implements OnInit {
               value: JSON.stringify(this.doctorValue)
             }],
           };
-          if (!this.reviewVisit1 && !this.reviewVisit2) {
+          let visistComplete = this.visitInfo.encounters.filter(enc => enc.display.match('Visit Complete'));
+          if (!visistComplete.length) {
             this.service.postEncounter(json)
               .subscribe(post => {
                 this.visitCompletePresent = true;

@@ -45,7 +45,7 @@ interface ReferralVisit {
 
 export class HomepageComponent implements OnInit {
   value: any = {};
-  referralVisit: ReferralHomepage = { awaitingCall : [], awaitingHospital: [], totalVisistInHospial: 0};
+  referralVisit: ReferralHomepage = { awaitingCall: [], awaitingHospital: [], totalVisistInHospial: 0 };
   referralCallValues: ReferralVisit[] = [];
   referralHospitalValues: ReferralVisit[] = [];
   activePatient: number;
@@ -104,11 +104,12 @@ export class HomepageComponent implements OnInit {
       .subscribe(response => {
         const visits = response.results;
         let length = 0, flagLength = 0, visitNoteLength = 0, completeVisitLength = 0, review = 0;
-        visits.forEach(async active => {          
+        visits.forEach(async active => {
           if (active.encounters.length > 0) {
             let value = active.encounters.filter(enc => !enc.voided)[0].display; //active.encounters[0].display;
             if (value.match('Eye Camp')) {
-              value = active.encounters[1].display;
+              active.encounters.shift();
+              value = active.encounters.filter(enc => !enc.voided)[0].display;
             }
             if (value.match('Flagged')) {
               if (!active.encounters[0].voided) {
@@ -140,15 +141,15 @@ export class HomepageComponent implements OnInit {
                   if (visitComplete.length) {
                     if (visitNote.length) {
                       const mainDoctor: any = this.processReview(visitNote[0]);
-                      if (mainDoctor) {
-                        const visitCompleteValues = this.assignValueToProperty(active, 'Visit Complete', mainDoctor);
-                        this.completedVisit.push(visitCompleteValues);
-                        completeVisitLength += 1;
-                      } else {
-                        const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
-                        this.waitingVisit.push(waitingListValues);
-                        length += 1;
-                      }
+                      // if (mainDoctor) {
+                      const visitCompleteValues = this.assignValueToProperty(active, 'Visit Complete');
+                      this.completedVisit.push(visitCompleteValues);
+                      completeVisitLength += 1;
+                      // } else {
+                      //   const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
+                      //   this.waitingVisit.push(waitingListValues);
+                      //   length += 1;
+                      // }
                     } else {
                       const waitingListValues = this.assignValueToProperty(active, 'ADULTINITIAL');
                       this.waitingVisit.push(waitingListValues);
@@ -251,8 +252,6 @@ export class HomepageComponent implements OnInit {
         // saveToStorage('allAwaitingConsult', this.waitingVisit);
         saveToStorage('allReviewVisit1', this.review1);
         saveToStorage('allReviewVisit2', this.review2);
-        console.log('review 1', this.review1)
-        console.log('review 2', this.review2)
         this.setSpiner = false;
         this.activePatient = length;
         this.flagPatientNo = flagLength;
@@ -321,7 +320,7 @@ export class HomepageComponent implements OnInit {
                       } else if (data.status === 'Patient need a callback') {
                         try {
                           data.dueDate = JSON.parse(coOrdinatorStatus[0].value).date;
-                        } catch (e) {}
+                        } catch (e) { }
                         data.referralDate = coOrdinatorStatus[0].obsDatetime;
                         data.lastCalled = coOrdinatorStatus[0].obsDatetime;
                         this.referralVisit.awaitingCall.push(data);

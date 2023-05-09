@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { DiagnosisService } from '../../../services/diagnosis.service';
@@ -30,9 +30,10 @@ export class AdditionalCommentComponent implements OnInit {
   encounterUuid: string;
   patientId: string;
   visitUuid: string;
-  conceptComment = '162169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-  conceptCommentReview1 = '0b5a806d-d40f-47ae-af2a-b1c0b31a3042';
-  conceptCommentReview2 = '3685ce27-b556-4e56-9f5b-c44fa8141e6c';
+  conceptComment: String  = '162169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+  conceptCommentReview1: String = '0b5a806d-d40f-47ae-af2a-b1c0b31a3042';
+  conceptCommentReview2: String  = '3685ce27-b556-4e56-9f5b-c44fa8141e6c';
+  conceptCommentConcordance: String  = 'fdf06d30-863b-4778-98eb-6333159e1adc';
 
   rightConcept: string;
   coordinator: Boolean = getFromStorage('coordinator') || false;
@@ -40,6 +41,8 @@ export class AdditionalCommentComponent implements OnInit {
   commentForm = new UntypedFormGroup({
     comment: new UntypedFormControl('', [Validators.required])
   });
+
+  @Input() concordance;
 
   constructor(
     private diagnosisService: DiagnosisService,
@@ -50,7 +53,7 @@ export class AdditionalCommentComponent implements OnInit {
     this.visitUuid = this.route.snapshot.paramMap.get('visit_id');
     this.patientId = this.route.snapshot.params['patient_id'];
     const reviewVisit = checkReview(this.visitUuid);
-    this.rightConcept = reviewVisit?.reviewType === 1 ? 'conceptCommentReview1' : reviewVisit?.reviewType === 2 ? 'conceptCommentReview2' : 'conceptComment';
+    this.rightConcept = this.concordance ? 'conceptCommentConcordance' : reviewVisit?.reviewType === 1 ? 'conceptCommentReview1' : reviewVisit?.reviewType === 2 ? 'conceptCommentReview2' : 'conceptComment';
     this.diagnosisService.getObs(this.patientId, this[this.rightConcept])
       .subscribe(response => {
         response.results.forEach(obs => {

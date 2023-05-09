@@ -1,5 +1,5 @@
 import { trigger, transition, style, animate, keyframes } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { DiagnosisService } from 'src/app/services/diagnosis.service';
@@ -32,6 +32,10 @@ export class ReferralComponent implements OnInit {
   referralTimeConceptConceptReview1: String = '5c53e6a1-f9ef-48b3-9ebf-e3b9657c0c38';
   referralTimeConceptConceptReview2: String = '1655c4eb-e0aa-4e4c-bea9-dbe72619489d';
 
+  // Concordance
+  referralConceptConcordance: String = '0b4cf655-ff5c-48f6-9d02-9dd5b411c988';
+  referralTimeConceptConceptConcordance: String = '6f879f52-9845-445e-bea3-4309417e7c50';
+
   encounterUuid: string;
   patientId: string;
   visitUuid: string;
@@ -54,8 +58,17 @@ export class ReferralComponent implements OnInit {
     { concept: this.referralConceptReview2, name: 'referral' },
     { concept: this.referralTimeConceptConceptReview2, name: 'referralTime' }
   ];
+
+  // Concordance
+  referralConceptsConcordance = [
+    { concept: this.referralConceptConcordance, name: 'referral' },
+    { concept: this.referralTimeConceptConceptConcordance, name: 'referralTime' }
+  ];
+
   rightConcept: string;
   coordinator: Boolean = getFromStorage('coordinator') || false;
+
+  @Input() concordance;
 
   constructor(
     private diagnosisService: DiagnosisService,
@@ -66,7 +79,7 @@ export class ReferralComponent implements OnInit {
     this.visitUuid = this.route.snapshot.paramMap.get('visit_id');
     this.patientId = this.route.snapshot.params['patient_id'];
     const reviewVisit = checkReview(this.visitUuid);
-    this.rightConcept = reviewVisit?.reviewType === 1 ? 'referralConceptsReview1' : reviewVisit?.reviewType === 2 ? 'referralConceptsReview2' : 'referralConcepts';
+    this.rightConcept = this.concordance ? 'referralConceptsConcordance' : reviewVisit?.reviewType === 1 ? 'referralConceptsReview1' : reviewVisit?.reviewType === 2 ? 'referralConceptsReview2' : 'referralConcepts';
     // console.log(this.rightConcept)
     this[this.rightConcept].forEach(each => {
       this.diagnosisService.getObs(this.patientId, each.concept)

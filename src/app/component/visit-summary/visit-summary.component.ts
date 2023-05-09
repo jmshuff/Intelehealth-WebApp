@@ -30,8 +30,9 @@ export class VisitSummaryComponent implements OnInit {
   noVisit: Boolean = false;
   coordinator: Boolean = getFromStorage('coordinator') || false;
   visitInfo: any = {};
+  concordance: Boolean = getFromStorage('concordance') || false
 
-  constructor(private service: EncounterService,
+  constructor(private encounterService: EncounterService,
     private visitService: VisitService,
     private authService: AuthService,
     private snackbar: MatSnackBar,
@@ -48,107 +49,141 @@ export class VisitSummaryComponent implements OnInit {
     setTimeout(() => {
       this.setSpiner = false;
     }, 1000);
-    this.visitService.fetchVisitDetails(this.visitUuid)
-      .subscribe(visitDetails => {
-        try {
-          this.visitInfo = visitDetails;
-          visitDetails.encounters.forEach(encounter => {
-            const reviewVisit = checkReview(this.visitUuid);
-            if (reviewVisit.reviewType) {
-              this.reviewVisit1 = reviewVisit.review1.length ? true : false;
-              this.reviewVisit2 = reviewVisit.review2.length ? true : false;
-              this.show = reviewVisit.show ? true : false;
+    if (!this.concordance) {
+      this.visitService.fetchVisitDetails(this.visitUuid)
+        .subscribe(visitDetails => {
+          try {
+            this.visitInfo = visitDetails;
+            visitDetails.encounters.forEach(encounter => {
+              const reviewVisit = checkReview(this.visitUuid);
+              if (reviewVisit.reviewType) {
+                this.reviewVisit1 = reviewVisit.review1.length ? true : false;
+                this.reviewVisit2 = reviewVisit.review2.length ? true : false;
+                this.show = reviewVisit.show ? true : false;
+              }
+              if (encounter.display.match('Review 2') !== null) {
+                this.show = true;
+                saveToStorage('visitNoteProvider', encounter);
+                throw 'BreakError';
+              } else if (encounter.display.match('Review 1') !== null) {
+                if (this.reviewVisit1) {
+                  const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
+                  if (rightEnco.length) {
+                    this.show = true;
+                    saveToStorage('visitNoteProvider', rightEnco[0]);
+                  } else {
+                    this.onStartVisit();
+                  }
+                } else {
+                  const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
+                  if (rightEnco.length) {
+                    this.show = true;
+                    saveToStorage('visitNoteProvider', rightEnco[0]);
+                  } else {
+                    this.onStartVisit();
+                  }
+                }
+                throw 'BreakError';
+              } else if (encounter.display.match('Visit Complete') !== null) {
+                this.visitNotePresent = true;
+                this.show = true;
+                saveToStorage('visitNoteProvider', encounter);
+                if (this.reviewVisit1) {
+                  const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
+                  if (rightEnco.length) {
+                    this.show = true;
+                    saveToStorage('visitNoteProvider', rightEnco[0]);
+                  } else {
+                    this.onStartVisit();
+                  }
+                } else {
+                  const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
+                  if (rightEnco.length) {
+                    this.show = true;
+                    saveToStorage('visitNoteProvider', rightEnco[0]);
+                  } else {
+                    this.onStartVisit();
+                  }
+                }
+                throw 'BreakError';
+              } else if (encounter.display.match('Visit Note') !== null) {
+                this.visitNotePresent = true;
+                this.show = true;
+                saveToStorage('visitNoteProvider', encounter);
+                if (this.reviewVisit1) {
+                  const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
+                  if (rightEnco.length) {
+                    this.show = true;
+                    saveToStorage('visitNoteProvider', rightEnco[0]);
+                  } else {
+                    this.onStartVisit();
+                  }
+                } else {
+                  const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
+                  if (rightEnco.length) {
+                    this.show = true;
+                    saveToStorage('visitNoteProvider', rightEnco[0]);
+                  } else {
+                    this.onStartVisit();
+                  }
+                }
+                throw 'BreakError';
+              } else if (encounter.display.match('ADULTINITIAL') || encounter.display.match('Vitals')) {
+                saveToStorage('healthWorkerDetails', encounter);
+                this.onStartVisit();
+                throw 'BreakError';
+              } else if (encounter.display.match('Visit Complete') !== null) {
+                this.visitCompletePresent = true;
+                encounter.encounterProviders[0].provider.attributes.forEach(element => {
+                  if (element.attributeType.display === 'textOfSign') {
+                    this.text = element.value;
+                  } if (element.attributeType.display === 'fontOfSign') {
+                    this.font = element.value;
+                  }
+                });
+                throw 'BreakError';
+              }
+            });
+          } catch (err) {
+            if (err !== 'BreakError') {
+              console.log(err)
             }
-            if (encounter.display.match('Review 2') !== null) {
-              this.show = true;
-              saveToStorage('visitNoteProvider', encounter);
-              throw 'BreakError';
-            } else if (encounter.display.match('Review 1') !== null) {
-              if (this.reviewVisit1) {
-                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
-                if (rightEnco.length) {
-                  this.show = true;
-                  saveToStorage('visitNoteProvider', rightEnco[0]);
-                } else {
-                  this.onStartVisit();
-                }
-              } else {
-                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
-                if (rightEnco.length) {
-                  this.show = true;
-                  saveToStorage('visitNoteProvider', rightEnco[0]);
-                } else {
-                  this.onStartVisit();
-                }
-              }
-              throw 'BreakError';
-            } else if (encounter.display.match('Visit Complete') !== null) {
-              this.visitNotePresent = true;
-              this.show = true;
-              saveToStorage('visitNoteProvider', encounter);
-              if (this.reviewVisit1) {
-                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
-                if (rightEnco.length) {
-                  this.show = true;
-                  saveToStorage('visitNoteProvider', rightEnco[0]);
-                } else {
-                  this.onStartVisit();
-                }
-              } else {
-                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
-                if (rightEnco.length) {
-                  this.show = true;
-                  saveToStorage('visitNoteProvider', rightEnco[0]);
-                } else {
-                  this.onStartVisit();
-                }
-              }
-              throw 'BreakError';
-            } else if (encounter.display.match('Visit Note') !== null) {
-              this.visitNotePresent = true;
-              this.show = true;
-              saveToStorage('visitNoteProvider', encounter);
-              if (this.reviewVisit1) {
-                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 1'));
-                if (rightEnco.length) {
-                  this.show = true;
-                  saveToStorage('visitNoteProvider', rightEnco[0]);
-                } else {
-                  this.onStartVisit();
-                }
-              } else {
-                const rightEnco = visitDetails.encounters.filter(enc => enc.display.match('Review 2'));
-                if (rightEnco.length) {
-                  this.show = true;
-                  saveToStorage('visitNoteProvider', rightEnco[0]);
-                } else {
-                  this.onStartVisit();
-                }
-              }
-              throw 'BreakError';
-            } else if (encounter.display.match('ADULTINITIAL') || encounter.display.match('Vitals')) {
-              saveToStorage('healthWorkerDetails', encounter);
-              this.onStartVisit();
-              throw 'BreakError';
-            } else if (encounter.display.match('Visit Complete') !== null) {
-              this.visitCompletePresent = true;
-              encounter.encounterProviders[0].provider.attributes.forEach(element => {
-                if (element.attributeType.display === 'textOfSign') {
-                  this.text = element.value;
-                } if (element.attributeType.display === 'fontOfSign') {
-                  this.font = element.value;
-                }
-              });
-              throw 'BreakError';
-            }
-          });
-        } catch (err) {
-          if (err !== 'BreakError') {
-            console.log(err)
           }
-        }
-      });
-    this.nextVisitButton(this.coordinator ? this.allReferralVisit : this.allVisit);
+        });
+      this.nextVisitButton(this.coordinator ? this.allReferralVisit : this.allVisit);
+    } else {
+      this.visitService.fetchVisitDetails(this.visitUuid)
+        .subscribe(visitDetails => {
+          let concordanceEncounter = visitDetails.encounters.filter(enc => enc.display.match('RoConcordance') !== null);
+          if (!concordanceEncounter.length) {
+            const myDate = new Date(Date.now() - 30000);
+            const providerDetails = getFromStorage('provider');
+            const providerUuid = providerDetails.uuid;
+            const json = {
+              patient: this.patientUuid,
+              encounterType: '8ebcef65-81db-4d41-81f3-9e8e9b36aee7',
+              encounterProviders: [{
+                provider: providerUuid,
+                encounterRole: '73bbb069-9781-4afc-a9d1-54b6b2270e03'
+              }],
+              visit: this.visitUuid,
+              encounterDatetime: myDate
+            };
+            this.encounterService.postEncounter(json).subscribe(response => {
+              if (response) {
+                this.visitNotePresent = true;
+                this.show = true;
+                saveToStorage('concordanceEncounter', response);
+              }
+            })
+          } else {
+            this.visitNotePresent = true;
+            this.show = true;
+            saveToStorage('concordanceEncounter', concordanceEncounter[0]);
+          }
+        })
+
+    }
   }
 
   nextVisitButton(visitData) {
@@ -184,7 +219,7 @@ export class VisitSummaryComponent implements OnInit {
         visit: this.visitUuid,
         encounterDatetime: myDate
       };
-      this.service.postEncounter(json)
+      this.encounterService.postEncounter(json)
         .subscribe(response => {
           if (response) {
             this.visitService.fetchVisitDetails(this.visitUuid)
@@ -224,7 +259,7 @@ export class VisitSummaryComponent implements OnInit {
     this.getDoctorValue();
     const providerUuid = providerDetails.uuid;
     // if (providerUuid === getEncounterProviderUUID()) {
-    this.service.signRequest(providerUuid)
+    this.encounterService.signRequest(providerUuid)
       .subscribe(res => {
         if (res.results.length) {
           res.results.forEach(element => {
@@ -250,7 +285,7 @@ export class VisitSummaryComponent implements OnInit {
           };
           let visistComplete = this.visitInfo.encounters.filter(enc => enc.display.match('Visit Complete'));
           if (!visistComplete.length) {
-            this.service.postEncounter(json)
+            this.encounterService.postEncounter(json)
               .subscribe(post => {
                 this.visitCompletePresent = true;
                 this.snackbar.open('Visit Complete', null, { duration: 4000 });
@@ -291,6 +326,10 @@ export class VisitSummaryComponent implements OnInit {
 
   filterAttributes = (data, text) => {
     return data.filter(attr => attr.attributeType['display'].toLowerCase() === text.toLowerCase());
+  }
+
+  redirect(value) {
+    this.router.navigateByUrl(`${value}`);
   }
 
 }

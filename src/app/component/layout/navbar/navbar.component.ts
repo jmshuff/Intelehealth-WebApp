@@ -8,7 +8,7 @@ import { ChangePasswordComponent } from '../../change-password/change-password.c
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { FindPatientComponent } from '../../find-patient/find-patient.component';
 import { environment } from '../../../../environments/environment';
-declare var getFromStorage: any;
+declare var getFromStorage: any, deleteFromStorage: any;
 
 @Component({
   selector: 'app-navbar',
@@ -54,6 +54,8 @@ export class NavbarComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+    deleteFromStorage('concordance');
+    if (getFromStorage('concordanceEncounter')) { deleteFromStorage('concordanceEncounter');}
   }
 
   report() {

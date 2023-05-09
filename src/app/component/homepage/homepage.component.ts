@@ -67,7 +67,9 @@ export class HomepageComponent implements OnInit {
     private snackbar: MatSnackBar) { }
 
   ngOnInit() {
+    deleteFromStorage('concordance');
     if (getFromStorage('visitNoteProvider')) { deleteFromStorage('visitNoteProvider'); }
+    if (getFromStorage('concordanceEncounter')) { deleteFromStorage('concordanceEncounter');}
     const userDetails = getFromStorage('user');
     if (userDetails) {
       this.sessionService.provider(userDetails.uuid)

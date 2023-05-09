@@ -18,7 +18,12 @@ const getEncounterProviderUUID = () => {
 }
 
 const getEncounterUUID = () => {
-    return getFromStorage('visitNoteProvider').uuid;
+    if (getFromStorage('concordance')) {
+        return getFromStorage('concordanceEncounter').uuid;
+    } else {
+        return getFromStorage('visitNoteProvider').uuid;
+    }
+    
 }
 
 const checkReview = (visitId) => {

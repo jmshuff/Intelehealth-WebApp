@@ -62,6 +62,12 @@ export class DiagnosisComponent implements OnInit {
   conceptCoordinatorAdditionalPathologyLeft: String = 'f299dc9e-c1e0-4a51-be5b-60d3cc118991';
   conceptCoordinatorAdditionalPathologyRight: String = '228ef575-71b9-4d7b-8ee7-cad98d27e3a2'
 
+  // Concordance
+  conceptConcordanceRightLensEyeDiagnosis: String = '0876272f-4628-4a2a-91d0-26ec4f579da7';
+  conceptConcordanceLeftLensEyeDiagnosis: String = '76ff9ee7-98c6-4f6b-a3ff-e5dba3e01ed9';
+  conceptConcordanceAdditionalPathologyRight: String = 'eae41a20-b085-446d-9a7d-65d1bd33a229';
+  conceptConcordanceAdditionalPathologyLeft: String = '446e249a-2ea5-4171-b3ea-1ebe8a3ab4b9';
+
   
   patientId: string;
   visitUuid: string;
@@ -71,6 +77,8 @@ export class DiagnosisComponent implements OnInit {
   coordinator: Boolean = getFromStorage('coordinator') || false;
   @Input() showDetails;
   @Input() data;
+
+  @Input() concordance;
 
   diagnosisConcept = [
     {concept: this.conceptLeftLensEyeDiagnosis, name: 'leftLensDiagnosis'},
@@ -93,6 +101,13 @@ export class DiagnosisComponent implements OnInit {
     {concept: this.conceptadditionalPathologyRightReview2, name: 'rightPathologyDiagnosis'}
   ];
 
+  diagnosisConceptConcordance = [
+    {concept: this.conceptConcordanceLeftLensEyeDiagnosis, name: 'leftLensDiagnosis'},
+    {concept: this.conceptConcordanceRightLensEyeDiagnosis , name: 'rightLensDiagnosis'},
+    {concept: this.conceptConcordanceAdditionalPathologyLeft, name: 'leftPathologyDiagnosis'},
+    {concept: this.conceptConcordanceAdditionalPathologyRight, name: 'rightPathologyDiagnosis'}
+  ]
+
   rightConcept: string;
 
   diagnosisForm = new UntypedFormGroup({
@@ -114,7 +129,7 @@ export class DiagnosisComponent implements OnInit {
     this.visitUuid = this.route.snapshot.paramMap.get('visit_id');
     this.patientId = this.route.snapshot.params['patient_id'] || this.data.patientId;
     const reviewVisit = checkReview(this.visitUuid);
-    this.rightConcept = reviewVisit?.reviewType === 1 ? 'diagnosisConceptReview1' : reviewVisit?.reviewType === 2 ? 'diagnosisConceptReview2' : 'diagnosisConcept';
+    this.rightConcept = this.concordance ? 'diagnosisConceptConcordance' : reviewVisit?.reviewType === 1 ? 'diagnosisConceptReview1' : reviewVisit?.reviewType === 2 ? 'diagnosisConceptReview2' : 'diagnosisConcept';
     // console.log(this.rightConcept)
     this[this.rightConcept].forEach(each => {
       this.diagnosisService.getObs(this.patientId, each.concept)

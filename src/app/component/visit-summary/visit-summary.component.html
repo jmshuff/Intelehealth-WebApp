@@ -46,31 +46,26 @@
     <br /> -->
 
     <div class="text-center" *ngIf="!show">
-      <button
-        (click)="onStartVisit()"
-        id="start-visit"
-        mat-raised-button
-        color="primary"
-      >
+      <button (click)="onStartVisit()" id="start-visit" mat-raised-button color="primary">
         Start Visit Note
       </button>
       <br />
     </div>
-    
+
     <div *ngIf="show">
       <mat-card>
-        <app-diagnosis></app-diagnosis>
+        <app-diagnosis [concordance]="concordance"></app-diagnosis>
         <br *ngIf="coordinator" />
         <app-additional-comment *ngIf="coordinator"></app-additional-comment>
       </mat-card>
-      <br/>
+      <br />
       <mat-card>
-        <app-referral></app-referral>
+        <app-referral [concordance]="concordance"></app-referral>
       </mat-card>
       <div *ngIf="!coordinator">
         <br />
         <mat-card>
-          <app-additional-comment></app-additional-comment>
+          <app-additional-comment [concordance]="concordance"></app-additional-comment>
         </mat-card>
       </div>
       <br />
@@ -105,14 +100,12 @@
         </ng-container>
 
         <div class="text-center">
-          <button
-            (click)="sign()"
-            id="sign-button"
-            mat-raised-button
-            color="primary"
-            [disabled]="visitCompletePresent && !reviewVisit1 && !reviewVisit2"
-          >
+          <button *ngIf="!concordance" (click)="sign()" id="sign-button" mat-raised-button color="primary"
+            [disabled]="visitCompletePresent && !reviewVisit1 && !reviewVisit2">
             {{noVisit ? 'Submit' : 'Submit and Next'}}
+          </button>
+          <button *ngIf="concordance" id="sign-button" mat-raised-button color="primary" (click)="redirect('concordance')">
+            Search another Patient
           </button>
         </div>
       </div>

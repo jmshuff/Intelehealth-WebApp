@@ -78,6 +78,7 @@ import { UpdateStatusComponent } from './component/visit-summary/update-status/u
 import { ModalComponent } from './component/visit-summary/update-status/modal/modal.component';
 import { EyeformComponent } from './component/homepage/eyeform/eyeform.component';
 import { ReportComponent } from './component/layout/navbar/report/report.component';
+import { ConcordanceComponent } from './component/homepage/concordance/concordance.component';
 
 @NgModule({
   declarations: [
@@ -119,7 +120,8 @@ import { ReportComponent } from './component/layout/navbar/report/report.compone
     UpdateStatusComponent,
     ModalComponent,
     EyeformComponent,
-    ReportComponent
+    ReportComponent,
+    ConcordanceComponent
   ],
   imports: [
     BrowserModule,
@@ -155,6 +157,7 @@ import { ReportComponent } from './component/layout/navbar/report/report.compone
       { path: '', component: LoginPageComponent },
       { path: 'home', component: HomepageComponent, canActivate: [AuthGuard] },
       { path: 'eyeform', component: EyeformComponent, canActivate: [AuthGuard] },
+      { path: 'concordance', component: ConcordanceComponent, canActivate: [AuthGuard] },
       { path: 'findPatient', component: FindPatientComponent, canActivate: [AuthGuard] },
       { path: 'myAccount', component: MyAccountComponent, canActivate: [AuthGuard] },
       { path: 'ayu', component: AyuComponent, canActivate: [AuthGuard] },

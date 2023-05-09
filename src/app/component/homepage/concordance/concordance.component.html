@@ -1,0 +1,18 @@
+<div class="mt-50">
+    <div class="container">
+        <div class="center-form">
+            <div>
+                <mat-form-field class="form-input" appearance="fill">
+                  <input type="text" placeholder="Patient Id" matInput (keyup)="_filter($event.target.value)" [matAutocomplete]="auto" />
+                  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="selected($event.option.value)">
+                    <mat-option *ngFor="let option of filterData" [value]="option?.patient_uuid">
+                      <p>
+                        {{ option?.patient.person?.display }}
+                      </p>
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+        </div>
+    </div>
+</div>

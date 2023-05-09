@@ -45,6 +45,9 @@
         <li class="nav-item" *ngIf="eyeCampAccess">
           <a class="nav-link" routerLink="/eyeform">Eye Camp Form</a>
         </li>
+        <li *ngIf="reportAccess" class="nav-item">
+          <a class="nav-link" routerLink="/concordance">RO Concordance</a>
+        </li>
         <li class="nav-item" (click)="report()">
           <a class="nav-link">Review Report</a>
         </li>

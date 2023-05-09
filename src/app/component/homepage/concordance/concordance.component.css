@@ -1,0 +1,18 @@
+.mt-50 {
+    margin-top: 50px;
+}
+
+.center-form {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-input {
+    padding: 5px 8px 0 14px;
+    border-radius: 24px;
+    width: 400px;
+}

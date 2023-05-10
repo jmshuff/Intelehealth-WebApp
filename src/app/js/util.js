@@ -14,7 +14,11 @@ const deleteFromStorage = (name) => {
 }
 
 const getEncounterProviderUUID = () => {
-    return getFromStorage('visitNoteProvider').encounterProviders[0].provider.uuid;
+    if (getFromStorage('concordance')) {
+        return getFromStorage('concordanceEncounter').encounterProviders[0].provider.uuid;
+    } else {
+        return getFromStorage('visitNoteProvider').encounterProviders[0].provider.uuid;
+    }
 }
 
 const getEncounterUUID = () => {

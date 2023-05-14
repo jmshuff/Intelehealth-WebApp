@@ -89,8 +89,10 @@ export class ReferralComponent implements OnInit {
               if (obs.value === 'true') {
                 this[each.name] = true;
                 this[`${each.name}Obs`] = obs;
+                this[`${each.name}`] = obs;
               } else {
                 this[`${each.name}Obs`] = obs;
+                this[`${each.name}`] = obs;
               }
             }
           });

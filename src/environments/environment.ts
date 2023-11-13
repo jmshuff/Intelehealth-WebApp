@@ -4,11 +4,11 @@
 
 export const environment = {
   production: false,
-  baseURL: 'https://tvl.visilant.org/openmrs/ws/rest/v1',
-  baseURLCoreApp : 'https://tvl.visilant.org/openmrs/coreapps/diagnoses',
-  baseURLLegacy: 'https://tvl.visilant.org/openmrs',
-  mindmapURL: 'http://tvl.visilant.org:3004/api',
-  azureImage: 'https://testing.visilant.org:3006/api/v1'
+  baseURL: 'https://tvlcornea.org/openmrs/ws/rest/v1',
+  baseURLCoreApp : 'https://tvlcornea.org/openmrs/coreapps/diagnoses',
+  baseURLLegacy: 'https://tvlcornea.org/openmrs',
+  mindmapURL: 'http://tvlcornea.org:3004/api',
+  azureImage: 'https://tvlcornea.org:3006/api/v1'
 };
 
 /*
